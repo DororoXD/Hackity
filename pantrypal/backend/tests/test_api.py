@@ -1,3 +1,5 @@
+import pandas as pd
+
 TOMATOES = 41  # shelf life 6 days, unit kg
 
 
@@ -54,3 +56,37 @@ def test_alerts_for_expiring_and_expired_batches(client):
     assert (tomatoes["risk"], tomatoes["expected_waste_units"], tomatoes["rm_at_risk"]) == (1.0, 6.0, 36.0)
     assert tomatoes["discount_pct"] > 0 and tomatoes["expected_rm_saved"] > 0
     assert tomatoes["explanation"].startswith("12 kg Tomatoes expire in 2 days.")
+
+
+def test_alerts_use_ml_forecasts_where_they_cover_the_date(client, monkeypatch):
+    from services import alert_service
+
+    # The ML forecast says Tomatoes sell 2 kg a day. It has nothing for Spinach, so Spinach falls back
+    # to last week's sales: 1 kg a day. Sales go in before the batches so they don't use up any stock.
+    days = pd.date_range("2024-06-10", periods=3)
+    ml = pd.DataFrame({"store_id": alert_service.STORE_ID, "product_id": TOMATOES, "origin_date": pd.Timestamp("2024-06-09"),
+                       "target_date": days, "q10": 2.0, "q50": 2.0, "q90": 2.0})
+    monkeypatch.setattr(alert_service, "ml_forecasts", lambda: ml)
+    csv = "date,product_id,quantity\n" + "".join(f"2024-06-0{d},140,1\n" for d in range(3, 10))
+    client.post("/sales/import", files={"file": ("pos.csv", csv)})
+    client.post("/batches", json={"product_id": TOMATOES, "quantity": 12, "received_date": "2024-06-06",
+                                  "expiry_date": "2024-06-12"})
+    client.post("/batches", json={"product_id": 140, "quantity": 5, "received_date": "2024-06-09",
+                                  "expiry_date": "2024-06-11"})
+
+    alerts = {a["name"]: a for a in client.get("/alerts", params={"today": "2024-06-10"}).json()}
+    assert alerts["Tomatoes"]["expected_waste_units"] == 6.0  # 12 - 3 days x 2 kg
+    assert alerts["Spinach"]["expected_waste_units"] == 3.0  # 5 - 2 days x 1 kg
+
+
+def test_ml_forecasts_are_read_for_this_store():
+    from services.alert_service import STORE_ID, ml_forecasts
+
+    forecasts = ml_forecasts()
+    assert len(forecasts) > 0 and set(forecasts["store_id"]) == {STORE_ID}
+
+
+def test_demo_date_setting(client, monkeypatch):
+    monkeypatch.setenv("PANTRYPAL_TODAY", "2024-06-10")
+    batch = client.post("/batches", json={"product_id": TOMATOES, "quantity": 3}).json()
+    assert (batch["received_date"], batch["expiry_date"], batch["days_left"]) == ("2024-06-10", "2024-06-16", 6)

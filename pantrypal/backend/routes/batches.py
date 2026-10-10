@@ -4,6 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
+import clock
 from database import Batch, Product, get_session
 from schemas import BatchCreate, BatchOut, BatchStatus, BatchUpdate
 
@@ -25,7 +26,7 @@ def list_batches(status: Optional[BatchStatus] = BatchStatus.active, today: Opti
     query = select(Batch, Product).join(Product).order_by(Batch.expiry_date)
     if status:
         query = query.where(Batch.status == status.value)
-    today = today or date.today()
+    today = today or clock.today()
     return [to_out(b, p, today) for b, p in session.exec(query)]
 
 
@@ -34,7 +35,7 @@ def create_batch(body: BatchCreate, session: Session = Depends(get_session)):
     product = session.get(Product, body.product_id)
     if product is None:
         raise HTTPException(404, f"Unknown product_id {body.product_id}")
-    received = body.received_date or date.today()
+    received = body.received_date or clock.today()
     batch = Batch(
         product_id=product.product_id, quantity=body.quantity, received_date=received,
         expiry_date=body.expiry_date or received + timedelta(days=product.shelf_life_days),
@@ -42,7 +43,7 @@ def create_batch(body: BatchCreate, session: Session = Depends(get_session)):
     session.add(batch)
     session.commit()
     session.refresh(batch)
-    return to_out(batch, product, date.today())
+    return to_out(batch, product, clock.today())
 
 
 @router.patch("/{batch_id}", response_model=BatchOut)
@@ -57,7 +58,7 @@ def update_batch(batch_id: int, body: BatchUpdate, session: Session = Depends(ge
         batch.status = body.status.value
     session.commit()
     session.refresh(batch)
-    return to_out(batch, session.get(Product, batch.product_id), date.today())
+    return to_out(batch, session.get(Product, batch.product_id), clock.today())
 
 
 @router.delete("/{batch_id}", status_code=204)

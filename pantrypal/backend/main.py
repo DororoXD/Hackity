@@ -1,5 +1,6 @@
 """PantryPal API. Run from this folder: uvicorn main:app --reload --host 0.0.0.0
 Interactive docs: http://localhost:8000/docs
+Set PANTRYPAL_TODAY=YYYY-MM-DD to run on a fixed demo date (see clock.py).
 """
 from contextlib import asynccontextmanager
 
