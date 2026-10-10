@@ -84,7 +84,8 @@ def test_alerts_for_expiring_and_expired_batches(client):
                                   "expiry_date": "2026-10-09"})  # on the shelf all week; absorbs the imported sales
     client.post("/sales/import", files={"file": ("pos.csv", csv)})
 
-    alerts = client.get("/alerts", params={"today": "2026-10-10"}).json()
+    response = client.get("/alerts", params={"today": "2026-10-10"}).json()
+    alerts = response["alerts"]
     assert [(a["name"], a["issue_type"], a["action"], a["priority"]) for a in alerts] == [
         ("Spinach", "expired", "remove", "high"),
         ("Tomatoes", "expiring_soon", "discount", "medium"),
@@ -93,6 +94,9 @@ def test_alerts_for_expiring_and_expired_batches(client):
     assert (tomatoes["risk"], tomatoes["expected_waste_units"], tomatoes["rm_at_risk"]) == (1.0, 6.0, 36.0)
     assert tomatoes["discount_pct"] > 0 and tomatoes["expected_rm_saved"] > 0
     assert tomatoes["explanation"].startswith("12 kg Tomatoes expire in 2 days.")
+    assert (response["today"], response["expired_or_today"], response["due_soon"]) == ("2026-10-10", 1, 1)
+    assert response["total_rm_at_risk"] == round(alerts[0]["rm_at_risk"] + tomatoes["rm_at_risk"], 2)
+    assert response["total_expected_rm_saved"] == tomatoes["expected_rm_saved"]
 
 
 def test_alerts_use_ml_forecasts_where_they_cover_the_date(client, monkeypatch):
@@ -111,7 +115,7 @@ def test_alerts_use_ml_forecasts_where_they_cover_the_date(client, monkeypatch):
     client.post("/batches", json={"product_id": 140, "quantity": 5, "received_date": "2024-06-09",
                                   "expiry_date": "2024-06-11"})
 
-    alerts = {a["name"]: a for a in client.get("/alerts", params={"today": "2024-06-10"}).json()}
+    alerts = {a["name"]: a for a in client.get("/alerts", params={"today": "2024-06-10"}).json()["alerts"]}
     assert alerts["Tomatoes"]["expected_waste_units"] == 6.0  # 12 - 3 days x 2 kg
     assert alerts["Spinach"]["expected_waste_units"] == 3.0  # 5 - 2 days x 1 kg
 
@@ -142,3 +146,9 @@ def test_import_history_lists_real_imports_newest_first(client, monkeypatch):
         ("week24.csv", "2024-06-20", 1, 1),
     ]
     assert len(client.get("/sales/imports", params={"limit": 1}).json()) == 1
+
+
+def test_today_follows_the_demo_date(client, monkeypatch):
+    monkeypatch.setenv("PANTRYPAL_TODAY", "2024-06-20")
+    assert client.get("/today").json() == {"today": "2024-06-20"}
+    assert client.get("/alerts").json()["today"] == "2024-06-20"

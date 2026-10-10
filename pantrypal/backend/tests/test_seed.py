@@ -16,7 +16,7 @@ def test_seed_builds_a_demo_store_with_alerts(client):
     assert batches == 40 + sum(ROLES.values())  # a fresh batch per product, plus the older ones
     assert sales == 40 * HISTORY_DAYS
 
-    alerts = client.get("/alerts", params={"today": str(DEMO_DATE)}).json()
+    alerts = client.get("/alerts", params={"today": str(DEMO_DATE)}).json()["alerts"]
     assert sum(a["action"] == "remove" for a in alerts) == ROLES["expired"]
     assert any(a["issue_type"] == "expiring_soon" for a in alerts)
 

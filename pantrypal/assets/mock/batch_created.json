@@ -1,0 +1,11 @@
+{
+  "id": 55,
+  "product_id": 41,
+  "name": "Tomatoes",
+  "unit": "kg",
+  "quantity": 12.0,
+  "received_date": "2024-06-20",
+  "expiry_date": "2024-06-26",
+  "days_left": 6,
+  "status": "active"
+}

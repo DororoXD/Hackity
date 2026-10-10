@@ -7,8 +7,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import clock
 from database import init_db
 from routes import alerts, batches, sales_import, stock
+from schemas import TodayOut
 
 
 @asynccontextmanager
@@ -27,3 +29,9 @@ for module in (batches, stock, sales_import, alerts):
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/today", response_model=TodayOut)
+def today():
+    """The date the app is running on, for the date shown in the app's header."""
+    return TodayOut(today=clock.today())

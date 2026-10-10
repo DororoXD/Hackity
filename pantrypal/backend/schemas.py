@@ -105,6 +105,10 @@ class SalesImportResult(BaseModel):
     imported: int  # rows saved; 0 on a dry run
 
 
+class TodayOut(BaseModel):
+    today: date  # the server's date; the demo date when PANTRYPAL_TODAY is set
+
+
 class Alert(BaseModel):
     batch_id: int
     product_id: int
@@ -121,3 +125,12 @@ class Alert(BaseModel):
     rm_at_risk: float  # expected waste valued at the normal price
     expected_rm_saved: float  # extra RM the recommended action should earn versus doing nothing
     explanation: str
+
+
+class AlertsResponse(BaseModel):
+    today: date
+    expired_or_today: int  # alerts for batches that expired or expire today
+    due_soon: int  # alerts for batches expiring in the next few days (the engine looks 2 days ahead)
+    total_rm_at_risk: float
+    total_expected_rm_saved: float
+    alerts: list[Alert]  # most urgent first

@@ -1,0 +1,282 @@
+[
+  {
+    "product_id": 108,
+    "name": "White Bread",
+    "category": "Bakery",
+    "shelf_life_days": 3,
+    "unit": "loaves"
+  },
+  {
+    "product_id": 834,
+    "name": "Fresh Milk",
+    "category": "Dairy",
+    "shelf_life_days": 10,
+    "unit": "packs"
+  },
+  {
+    "product_id": 411,
+    "name": "Greek Yogurt",
+    "category": "Dairy",
+    "shelf_life_days": 10,
+    "unit": "packs"
+  },
+  {
+    "product_id": 783,
+    "name": "Eggs",
+    "category": "Eggs",
+    "shelf_life_days": 21,
+    "unit": "trays"
+  },
+  {
+    "product_id": 115,
+    "name": "Coriander",
+    "category": "Fresh herbs",
+    "shelf_life_days": 4,
+    "unit": "bunches"
+  },
+  {
+    "product_id": 250,
+    "name": "Bananas",
+    "category": "Fruit",
+    "shelf_life_days": 7,
+    "unit": "kg"
+  },
+  {
+    "product_id": 634,
+    "name": "Dragon Fruit",
+    "category": "Fruit",
+    "shelf_life_days": 7,
+    "unit": "kg"
+  },
+  {
+    "product_id": 345,
+    "name": "Guava",
+    "category": "Fruit",
+    "shelf_life_days": 7,
+    "unit": "kg"
+  },
+  {
+    "product_id": 422,
+    "name": "Honeydew",
+    "category": "Fruit",
+    "shelf_life_days": 7,
+    "unit": "kg"
+  },
+  {
+    "product_id": 291,
+    "name": "Mangoes",
+    "category": "Fruit",
+    "shelf_life_days": 7,
+    "unit": "kg"
+  },
+  {
+    "product_id": 635,
+    "name": "Papaya",
+    "category": "Fruit",
+    "shelf_life_days": 7,
+    "unit": "kg"
+  },
+  {
+    "product_id": 638,
+    "name": "Pineapple",
+    "category": "Fruit",
+    "shelf_life_days": 7,
+    "unit": "kg"
+  },
+  {
+    "product_id": 26,
+    "name": "Brinjal",
+    "category": "Fruiting vegetables",
+    "shelf_life_days": 6,
+    "unit": "kg"
+  },
+  {
+    "product_id": 774,
+    "name": "Cherry Tomatoes",
+    "category": "Fruiting vegetables",
+    "shelf_life_days": 6,
+    "unit": "kg"
+  },
+  {
+    "product_id": 578,
+    "name": "Cucumber",
+    "category": "Fruiting vegetables",
+    "shelf_life_days": 6,
+    "unit": "kg"
+  },
+  {
+    "product_id": 23,
+    "name": "Japanese Cucumber",
+    "category": "Fruiting vegetables",
+    "shelf_life_days": 6,
+    "unit": "kg"
+  },
+  {
+    "product_id": 41,
+    "name": "Tomatoes",
+    "category": "Fruiting vegetables",
+    "shelf_life_days": 6,
+    "unit": "kg"
+  },
+  {
+    "product_id": 70,
+    "name": "Bok Choy",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 21,
+    "name": "Choy Sum",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 215,
+    "name": "Kai Lan",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 500,
+    "name": "Kangkung",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 843,
+    "name": "Lettuce",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 118,
+    "name": "Napa Cabbage",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 117,
+    "name": "Romaine Lettuce",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 136,
+    "name": "Sawi",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 140,
+    "name": "Spinach",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 554,
+    "name": "Watercress",
+    "category": "Leafy greens",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 486,
+    "name": "Beef Cubes",
+    "category": "Meat & poultry",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 769,
+    "name": "Beef Slices",
+    "category": "Meat & poultry",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 300,
+    "name": "Chicken Breast",
+    "category": "Meat & poultry",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 847,
+    "name": "Chicken Thigh",
+    "category": "Meat & poultry",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 104,
+    "name": "Chicken Wings",
+    "category": "Meat & poultry",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 127,
+    "name": "Lamb Chops",
+    "category": "Meat & poultry",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 122,
+    "name": "Minced Beef",
+    "category": "Meat & poultry",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 6,
+    "name": "Whole Chicken",
+    "category": "Meat & poultry",
+    "shelf_life_days": 3,
+    "unit": "kg"
+  },
+  {
+    "product_id": 644,
+    "name": "Button Mushrooms",
+    "category": "Mushrooms",
+    "shelf_life_days": 5,
+    "unit": "kg"
+  },
+  {
+    "product_id": 93,
+    "name": "Ikan Kembung",
+    "category": "Seafood",
+    "shelf_life_days": 2,
+    "unit": "kg"
+  },
+  {
+    "product_id": 74,
+    "name": "Prawns",
+    "category": "Seafood",
+    "shelf_life_days": 2,
+    "unit": "kg"
+  },
+  {
+    "product_id": 4,
+    "name": "Firm Tofu",
+    "category": "Tofu & soy",
+    "shelf_life_days": 4,
+    "unit": "packs"
+  },
+  {
+    "product_id": 596,
+    "name": "Fresh Soy Milk",
+    "category": "Tofu & soy",
+    "shelf_life_days": 4,
+    "unit": "packs"
+  }
+]

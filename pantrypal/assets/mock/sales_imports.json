@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "filename": "sample_pos_export.csv",
+    "imported_on": "2024-06-20",
+    "rows_imported": 40,
+    "rows_rejected": 2
+  }
+]

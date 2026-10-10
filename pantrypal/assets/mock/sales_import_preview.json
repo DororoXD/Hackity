@@ -1,0 +1,386 @@
+{
+  "rows": [
+    {
+      "row": 2,
+      "sale_date": "2024-06-20",
+      "product": "Bananas",
+      "product_id": 250,
+      "name": "Bananas",
+      "quantity": 6.5,
+      "status": "ok"
+    },
+    {
+      "row": 3,
+      "sale_date": "2024-06-20",
+      "product": "Beef Cubes",
+      "product_id": 486,
+      "name": "Beef Cubes",
+      "quantity": 27.0,
+      "status": "ok"
+    },
+    {
+      "row": 4,
+      "sale_date": "2024-06-20",
+      "product": "Beef Slices",
+      "product_id": 769,
+      "name": "Beef Slices",
+      "quantity": 16.5,
+      "status": "ok"
+    },
+    {
+      "row": 5,
+      "sale_date": "2024-06-20",
+      "product": "Bok Choy",
+      "product_id": 70,
+      "name": "Bok Choy",
+      "quantity": 59.5,
+      "status": "ok"
+    },
+    {
+      "row": 6,
+      "sale_date": "2024-06-20",
+      "product": "Brinjal",
+      "product_id": 26,
+      "name": "Brinjal",
+      "quantity": 8.5,
+      "status": "ok"
+    },
+    {
+      "row": 7,
+      "sale_date": "2024-06-20",
+      "product": "Button Mushrooms",
+      "product_id": 644,
+      "name": "Button Mushrooms",
+      "quantity": 7.7,
+      "status": "ok"
+    },
+    {
+      "row": 8,
+      "sale_date": "2024-06-20",
+      "product": "Cherry Tomatoes",
+      "product_id": 774,
+      "name": "Cherry Tomatoes",
+      "quantity": 11.4,
+      "status": "ok"
+    },
+    {
+      "row": 9,
+      "sale_date": "2024-06-20",
+      "product": "Chicken Breast",
+      "product_id": 300,
+      "name": "Chicken Breast",
+      "quantity": 101.6,
+      "status": "ok"
+    },
+    {
+      "row": 10,
+      "sale_date": "2024-06-20",
+      "product": "Chicken Thigh",
+      "product_id": 847,
+      "name": "Chicken Thigh",
+      "quantity": 7.6,
+      "status": "ok"
+    },
+    {
+      "row": 11,
+      "sale_date": "2024-06-20",
+      "product": "Chicken Wings",
+      "product_id": 104,
+      "name": "Chicken Wings",
+      "quantity": 53.0,
+      "status": "ok"
+    },
+    {
+      "row": 12,
+      "sale_date": "2024-06-20",
+      "product": "Choy Sum",
+      "product_id": 21,
+      "name": "Choy Sum",
+      "quantity": 12.2,
+      "status": "ok"
+    },
+    {
+      "row": 13,
+      "sale_date": "2024-06-20",
+      "product": "Coriander",
+      "product_id": 115,
+      "name": "Coriander",
+      "quantity": 5.6,
+      "status": "ok"
+    },
+    {
+      "row": 14,
+      "sale_date": "2024-06-20",
+      "product": "Cucumber",
+      "product_id": 578,
+      "name": "Cucumber",
+      "quantity": 15.5,
+      "status": "ok"
+    },
+    {
+      "row": 15,
+      "sale_date": "2024-06-20",
+      "product": "Dragon Fruit",
+      "product_id": 634,
+      "name": "Dragon Fruit",
+      "quantity": 11.0,
+      "status": "ok"
+    },
+    {
+      "row": 16,
+      "sale_date": "2024-06-20",
+      "product": "Eggs",
+      "product_id": 783,
+      "name": "Eggs",
+      "quantity": 20.8,
+      "status": "ok"
+    },
+    {
+      "row": 17,
+      "sale_date": "2024-06-20",
+      "product": "Firm Tofu",
+      "product_id": 4,
+      "name": "Firm Tofu",
+      "quantity": 16.6,
+      "status": "ok"
+    },
+    {
+      "row": 18,
+      "sale_date": "2024-06-20",
+      "product": "Fresh Milk",
+      "product_id": 834,
+      "name": "Fresh Milk",
+      "quantity": 33.0,
+      "status": "ok"
+    },
+    {
+      "row": 19,
+      "sale_date": "2024-06-20",
+      "product": "Fresh Soy Milk",
+      "product_id": 596,
+      "name": "Fresh Soy Milk",
+      "quantity": 17.8,
+      "status": "ok"
+    },
+    {
+      "row": 20,
+      "sale_date": "2024-06-20",
+      "product": "Greek Yogurt",
+      "product_id": 411,
+      "name": "Greek Yogurt",
+      "quantity": 12.3,
+      "status": "ok"
+    },
+    {
+      "row": 21,
+      "sale_date": "2024-06-20",
+      "product": "Guava",
+      "product_id": 345,
+      "name": "Guava",
+      "quantity": 8.2,
+      "status": "ok"
+    },
+    {
+      "row": 22,
+      "sale_date": "2024-06-20",
+      "product": "Honeydew",
+      "product_id": 422,
+      "name": "Honeydew",
+      "quantity": 11.5,
+      "status": "ok"
+    },
+    {
+      "row": 23,
+      "sale_date": "2024-06-20",
+      "product": "Ikan Kembung",
+      "product_id": 93,
+      "name": "Ikan Kembung",
+      "quantity": 9.3,
+      "status": "ok"
+    },
+    {
+      "row": 24,
+      "sale_date": "2024-06-20",
+      "product": "Japanese Cucumber",
+      "product_id": 23,
+      "name": "Japanese Cucumber",
+      "quantity": 17.8,
+      "status": "ok"
+    },
+    {
+      "row": 25,
+      "sale_date": "2024-06-20",
+      "product": "Kai Lan",
+      "product_id": 215,
+      "name": "Kai Lan",
+      "quantity": 58.9,
+      "status": "ok"
+    },
+    {
+      "row": 26,
+      "sale_date": "2024-06-20",
+      "product": "Kangkung",
+      "product_id": 500,
+      "name": "Kangkung",
+      "quantity": 10.7,
+      "status": "ok"
+    },
+    {
+      "row": 27,
+      "sale_date": "2024-06-20",
+      "product": "Lamb Chops",
+      "product_id": 127,
+      "name": "Lamb Chops",
+      "quantity": 15.9,
+      "status": "ok"
+    },
+    {
+      "row": 28,
+      "sale_date": "2024-06-20",
+      "product": "Lettuce",
+      "product_id": 843,
+      "name": "Lettuce",
+      "quantity": 10.0,
+      "status": "ok"
+    },
+    {
+      "row": 29,
+      "sale_date": "2024-06-20",
+      "product": "Mangoes",
+      "product_id": 291,
+      "name": "Mangoes",
+      "quantity": 5.6,
+      "status": "ok"
+    },
+    {
+      "row": 30,
+      "sale_date": "2024-06-20",
+      "product": "Minced Beef",
+      "product_id": 122,
+      "name": "Minced Beef",
+      "quantity": 31.8,
+      "status": "ok"
+    },
+    {
+      "row": 31,
+      "sale_date": "2024-06-20",
+      "product": "Napa Cabbage",
+      "product_id": 118,
+      "name": "Napa Cabbage",
+      "quantity": 11.2,
+      "status": "ok"
+    },
+    {
+      "row": 32,
+      "sale_date": "2024-06-20",
+      "product": "Papaya",
+      "product_id": 635,
+      "name": "Papaya",
+      "quantity": 8.9,
+      "status": "ok"
+    },
+    {
+      "row": 33,
+      "sale_date": "2024-06-20",
+      "product": "Pineapple",
+      "product_id": 638,
+      "name": "Pineapple",
+      "quantity": 10.2,
+      "status": "ok"
+    },
+    {
+      "row": 34,
+      "sale_date": "2024-06-20",
+      "product": "Prawns",
+      "product_id": 74,
+      "name": "Prawns",
+      "quantity": 7.4,
+      "status": "ok"
+    },
+    {
+      "row": 35,
+      "sale_date": "2024-06-20",
+      "product": "Romaine Lettuce",
+      "product_id": 117,
+      "name": "Romaine Lettuce",
+      "quantity": 50.4,
+      "status": "ok"
+    },
+    {
+      "row": 36,
+      "sale_date": "2024-06-20",
+      "product": "Sawi",
+      "product_id": 136,
+      "name": "Sawi",
+      "quantity": 18.2,
+      "status": "ok"
+    },
+    {
+      "row": 37,
+      "sale_date": "2024-06-20",
+      "product": "Spinach",
+      "product_id": 140,
+      "name": "Spinach",
+      "quantity": 13.7,
+      "status": "ok"
+    },
+    {
+      "row": 38,
+      "sale_date": "2024-06-20",
+      "product": "Tomatoes",
+      "product_id": 41,
+      "name": "Tomatoes",
+      "quantity": 17.7,
+      "status": "ok"
+    },
+    {
+      "row": 39,
+      "sale_date": "2024-06-20",
+      "product": "Watercress",
+      "product_id": 554,
+      "name": "Watercress",
+      "quantity": 24.2,
+      "status": "ok"
+    },
+    {
+      "row": 40,
+      "sale_date": "2024-06-20",
+      "product": "White Bread",
+      "product_id": 108,
+      "name": "White Bread",
+      "quantity": 7.5,
+      "status": "ok"
+    },
+    {
+      "row": 41,
+      "sale_date": "2024-06-20",
+      "product": "Whole Chicken",
+      "product_id": 6,
+      "name": "Whole Chicken",
+      "quantity": 24.0,
+      "status": "ok"
+    },
+    {
+      "row": 42,
+      "sale_date": "2024-06-20",
+      "product": "Strawberries 250g",
+      "product_id": null,
+      "name": null,
+      "quantity": 6.0,
+      "status": "unmatched"
+    },
+    {
+      "row": 43,
+      "sale_date": null,
+      "product": "Greek Yogurt",
+      "product_id": 411,
+      "name": "Greek Yogurt",
+      "quantity": 9.0,
+      "status": "bad_date"
+    }
+  ],
+  "ok": 40,
+  "unmatched": 1,
+  "errors": 1,
+  "imported": 0
+}
