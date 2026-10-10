@@ -1,0 +1,5 @@
+/data/
+/models/
+*.parquet
+.venv/
+__pycache__/
