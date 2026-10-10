@@ -17,6 +17,13 @@ class IssueType(str, Enum):
     expiring_soon = "expiring_soon"
 
 
+class Action(str, Enum):
+    remove = "remove"
+    discount = "discount"
+    donate = "donate"
+    monitor = "monitor"
+
+
 class Priority(str, Enum):
     high = "high"
     medium = "medium"
@@ -79,11 +86,15 @@ class Alert(BaseModel):
     batch_id: int
     product_id: int
     name: str
-    issue_type: IssueType
-    priority: Priority
     quantity: float
     unit: str
     days_left: int
-    expected_unsold: float  # how much of the batch is unlikely to sell before it expires
-    message: str
-    suggested_action: str
+    priority: Priority
+    issue_type: IssueType
+    action: Action
+    discount_pct: int  # 0 unless action is discount
+    risk: float  # chance (0-1) that some of the batch goes unsold
+    expected_waste_units: float
+    rm_at_risk: float  # expected waste valued at the normal price
+    expected_rm_saved: float  # extra RM the recommended action should earn versus doing nothing
+    explanation: str

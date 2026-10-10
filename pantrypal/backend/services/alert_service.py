@@ -1,61 +1,61 @@
-"""Turns stock and recent sales into today's alerts.
+"""Today's alerts for the app: loads stock and sales from the DB and runs the decision engine on them.
 
-Rule-based for now: expected demand is the average daily sales over the last week.
-Swap average_daily_sales for the ML forecast (ml/out/forecasts.csv, q50) once it is ready.
+Demand is the average daily sales over the last week until the ML forecasts are wired in.
+Prices and discount response come from the ML team's files in ml/out/.
 """
 from datetime import date, timedelta
+from pathlib import Path
 
+import pandas as pd
 from sqlmodel import Session, func, select
 
 from database import Batch, Product, Sale
-from schemas import Alert, IssueType, Priority
+from engine import WINDOW_DAYS, recommend
+from schemas import Alert, Priority
 
-EXPIRY_WINDOW_DAYS = 2  # alert on batches whose last sellable day is within this many days
+ML_OUT = Path(__file__).resolve().parents[2] / "ml" / "out"
+STORE_ID = 0  # the app manages a single store
 SALES_LOOKBACK_DAYS = 7
 
 
-def average_daily_sales(session: Session, product_id: int, today: date) -> float:
+def recent_sales_forecast(session: Session, product_ids, today: date) -> pd.DataFrame:
+    """Forecast rows in the ML format, using last week's average daily sales for every day ahead."""
     since = today - timedelta(days=SALES_LOOKBACK_DAYS)
-    total = session.exec(select(func.sum(Sale.quantity))
-                         .where(Sale.product_id == product_id, Sale.sale_date >= since,
-                                Sale.sale_date < today)).one()
-    return (total or 0) / SALES_LOOKBACK_DAYS
-
-
-def when(days_left: int) -> str:
-    return {0: "today", 1: "tomorrow"}.get(days_left, f"in {days_left} days")
+    totals = dict(session.exec(select(Sale.product_id, func.sum(Sale.quantity))
+                               .where(Sale.sale_date >= since, Sale.sale_date < today)
+                               .group_by(Sale.product_id)).all())
+    rows = []
+    for product_id in product_ids:
+        daily = (totals.get(product_id) or 0) / SALES_LOOKBACK_DAYS
+        for day in range(WINDOW_DAYS + 1):
+            rows.append(dict(store_id=STORE_ID, product_id=product_id, origin_date=today - timedelta(days=1),
+                             target_date=today + timedelta(days=day), q10=daily, q50=daily, q90=daily))
+    return pd.DataFrame(rows)
 
 
 def build_alerts(session: Session, today: date) -> list[Alert]:
-    rows = session.exec(select(Batch, Product).join(Product)
-                        .where(Batch.status == "active",
-                               Batch.expiry_date <= today + timedelta(days=EXPIRY_WINDOW_DAYS)))
+    rows = session.exec(select(Batch, Product).join(Product).where(Batch.status == "active")).all()
+    if not rows:
+        return []
+    batches = pd.DataFrame([dict(store_id=STORE_ID, product_id=b.product_id, batch_id=b.id,
+                                 quantity=b.quantity, expiry_date=b.expiry_date) for b, _ in rows])
+    products = {p.product_id: p for _, p in rows}
+    names = pd.DataFrame([dict(product_id=p.product_id, name=p.name, unit=p.unit) for p in products.values()])
+    sku_params = names.merge(pd.read_csv(ML_OUT / "sku_params.csv"), on="product_id")
+    forecasts = recent_sales_forecast(session, products, today)
+    elasticity = pd.read_csv(ML_OUT / "elasticity.csv")
+
+    by_id = {b.id: (b, p) for b, p in rows}
     alerts = []
-    for batch, product in rows:
+    for rec in recommend(batches, forecasts, sku_params, elasticity, today).itertuples():
+        batch, product = by_id[rec.batch_id]
         days_left = (batch.expiry_date - today).days
-        qty = f"{batch.quantity:g} {product.unit} {product.name}"
-        common = dict(batch_id=batch.id, product_id=product.product_id, name=product.name,
-                      quantity=batch.quantity, unit=product.unit, days_left=days_left)
-
-        if days_left < 0:
-            alerts.append(Alert(**common, issue_type=IssueType.expired, priority=Priority.high,
-                                expected_unsold=batch.quantity,
-                                message=f"{qty} expired {-days_left} day(s) ago.",
-                                suggested_action="Remove from the shelf and record it as waste."))
-            continue
-
-        # Sellable days left include today and the expiry day itself.
-        expected_sales = average_daily_sales(session, product.product_id, today) * (days_left + 1)
-        unsold = round(max(0.0, batch.quantity - expected_sales), 1)
-        if unsold == 0:
-            continue  # on track to sell out in time
-        alerts.append(Alert(**common, issue_type=IssueType.expiring_soon,
-                            priority=Priority.high if days_left <= 1 else Priority.medium,
-                            expected_unsold=unsold,
-                            message=f"{qty} expire {when(days_left)}. About {unsold:g} {product.unit} "
-                                    f"will likely go unsold at current sales.",
-                            suggested_action="Discount now or donate before closing." if days_left == 0
-                                             else "Discount it or move it to the front of the shelf."))
-
+        alerts.append(Alert(
+            batch_id=batch.id, product_id=product.product_id, name=product.name, quantity=batch.quantity,
+            unit=product.unit, days_left=days_left, priority=Priority.high if days_left <= 1 else Priority.medium,
+            issue_type=rec.issue_type, action=rec.action, discount_pct=rec.discount_pct, risk=rec.risk,
+            expected_waste_units=rec.expected_waste_units, rm_at_risk=rec.rm_at_risk,
+            expected_rm_saved=rec.expected_rm_saved, explanation=rec.explanation,
+        ))
     order = {Priority.high: 0, Priority.medium: 1, Priority.low: 2}
-    return sorted(alerts, key=lambda a: (order[a.priority], a.days_left, -a.expected_unsold))
+    return sorted(alerts, key=lambda a: (order[a.priority], -a.rm_at_risk))

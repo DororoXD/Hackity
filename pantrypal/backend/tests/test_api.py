@@ -46,9 +46,11 @@ def test_alerts_for_expiring_and_expired_batches(client):
     client.post("/sales/import", files={"file": ("pos.csv", csv)})
 
     alerts = client.get("/alerts", params={"today": "2026-10-10"}).json()
-    assert [(a["name"], a["issue_type"], a["priority"]) for a in alerts] == [
-        ("Spinach", "expired", "high"),
-        ("Tomatoes", "expiring_soon", "medium"),
+    assert [(a["name"], a["issue_type"], a["action"], a["priority"]) for a in alerts] == [
+        ("Spinach", "expired", "remove", "high"),
+        ("Tomatoes", "expiring_soon", "discount", "medium"),
     ]
-    assert alerts[1]["expected_unsold"] == 6
-    assert alerts[1]["message"] == "12 kg Tomatoes expire in 2 days. About 6 kg will likely go unsold at current sales."
+    tomatoes = alerts[1]
+    assert (tomatoes["risk"], tomatoes["expected_waste_units"], tomatoes["rm_at_risk"]) == (1.0, 6.0, 36.0)
+    assert tomatoes["discount_pct"] > 0 and tomatoes["expected_rm_saved"] > 0
+    assert tomatoes["explanation"].startswith("12 kg Tomatoes expire in 2 days.")
