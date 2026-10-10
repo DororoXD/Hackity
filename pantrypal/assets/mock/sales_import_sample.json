@@ -1,0 +1,35 @@
+{
+  "rows": [
+    {
+      "row": 2,
+      "sale_date": "2026-10-09",
+      "product": "Fresh Milk 1L",
+      "product_id": null,
+      "name": null,
+      "quantity": 14,
+      "status": "unmatched"
+    },
+    {
+      "row": 3,
+      "sale_date": "2026-10-09",
+      "product": "Strawbery 250g",
+      "product_id": null,
+      "name": null,
+      "quantity": 6,
+      "status": "unmatched"
+    },
+    {
+      "row": 4,
+      "sale_date": null,
+      "product": "Greek Yogurt 500g",
+      "product_id": null,
+      "name": null,
+      "quantity": 9,
+      "status": "bad_date"
+    }
+  ],
+  "ok": 0,
+  "unmatched": 2,
+  "errors": 1,
+  "imported": 0
+}
