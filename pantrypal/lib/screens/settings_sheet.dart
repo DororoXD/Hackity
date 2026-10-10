@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
-import 'app_popups.dart';
+import '../widgets/app_popups.dart';
 
 Future<void> shelfLifeOverridesSheet(BuildContext context) {
   // Sample products. Replace with your real product list later.

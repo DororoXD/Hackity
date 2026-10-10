@@ -1,26 +1,120 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../core/helpers.dart';
 import '../core/theme.dart';
+import '../models/import_result.dart';
+import '../services/api_service.dart';
+import '../widgets/app_popups.dart';
 
 const _green = Color(0xFF3F8A5A);
 const _steps = ['1 Upload', '2 Map', '3 Preview', '4 Done'];
+const _maxRowsShown = 50;
 
-// Sample data from the design. Replace with real import results later.
-const _previewRows = [
-  ('09 Oct', 'Fresh Milk 1L', '14', 'OK'),
-  ('09 Oct', 'Strawbery 250g', '6', 'Unmatched'),
-  ('32 Oct', 'Greek Yogurt', '9', 'Bad date'),
-];
-
-const _history = [
-  ('sales_week40.csv', '4 Oct · 312 rows'),
-  ('sales_week39.csv', '27 Sep · 298 rows'),
-];
-
-class SalesImportScreen extends StatelessWidget {
+class SalesImportScreen extends StatefulWidget {
   const SalesImportScreen({super.key});
 
-  // Which step is highlighted. 0 = Upload, 1 = Map, 2 = Preview, 3 = Done.
-  static const int currentStep = 0;
+  @override
+  State<SalesImportScreen> createState() => _SalesImportScreenState();
+}
+
+class _SalesImportScreenState extends State<SalesImportScreen> {
+  // 0 = Upload, 2 = Preview, 3 = Done (1 = Map is not needed yet)
+  int _step = 0;
+  bool _busy = false;
+  String? _error;
+  String? _fileName;
+  List<int>? _bytes;
+  ImportResult? _result;
+
+  // Imports done in this session. A saved history needs a backend endpoint.
+  final List<(String, String)> _history = [];
+
+  Future<void> _pickFile() async {
+    if (_busy) return;
+    try {
+      final files = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['csv', 'xlsx'],
+      );
+      if (files == null || files.isEmpty) return; // the user cancelled
+
+      final file = files.first;
+      final bytes = await file.readAsBytes();
+      setState(() {
+        _fileName = file.name;
+        _bytes = bytes;
+        _result = null;
+        _error = null;
+        _busy = true;
+      });
+
+      // Preview step: check the file without saving anything.
+      final result = await ApiService.importSales(
+        filename: file.name,
+        bytes: bytes,
+        dryRun: true,
+      );
+      if (!mounted) return;
+      setState(() {
+        _result = result;
+        _step = 2;
+        _busy = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _error = e.toString();
+      });
+    }
+  }
+
+  Future<void> _import() async {
+    final result = _result;
+    final bytes = _bytes;
+    final name = _fileName;
+    if (result == null || bytes == null || name == null || _busy) return;
+
+    if (result.ok == 0) {
+      showAppSnack(context, 'There are no valid rows to import');
+      return;
+    }
+
+    final confirmed = await confirmDialog(
+      context,
+      title: 'Import valid rows?',
+      message: '${result.ok} row(s) will be imported. '
+          '${result.skipped} row(s) will be skipped.',
+      confirmLabel: 'Import',
+    );
+    if (!confirmed || !mounted) return;
+
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final done = await ApiService.importSales(
+        filename: name,
+        bytes: bytes,
+        dryRun: false,
+      );
+      if (!mounted) return;
+      setState(() {
+        _result = done;
+        _step = 3;
+        _busy = false;
+        _history.insert(0, (name, '${done.imported} rows imported'));
+      });
+      showAppSnack(context, '${done.imported} rows imported');
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _error = e.toString();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +137,7 @@ class SalesImportScreen extends StatelessWidget {
                 ),
               ),
               Text(
-                'Sat 10 Oct',
+                'Upload your POS export',
                 style: TextStyle(fontSize: 13, color: AppColors.cream),
               ),
             ],
@@ -54,16 +148,52 @@ class SalesImportScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(12),
             children: [
-              const _StepTabs(current: currentStep),
+              _StepTabs(current: _step),
               const SizedBox(height: 14),
-              const _UploadZone(),
+              _UploadZone(
+                fileName: _fileName,
+                busy: _busy,
+                onChoose: _pickFile,
+              ),
+              if (_error != null) ...[
+                const SizedBox(height: 10),
+                Text(
+                  _error!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 13, color: AppColors.red),
+                ),
+              ],
               const SizedBox(height: 18),
-              const _SectionTitle('PREVIEW & VALIDATE (STEP 3)'),
-              const _PreviewCard(),
+              const _SectionTitle('PREVIEW & VALIDATE'),
+              _PreviewCard(
+                result: _result,
+                done: _step == 3,
+                busy: _busy,
+                onImport: _import,
+              ),
               const SizedBox(height: 18),
               const _SectionTitle('IMPORT HISTORY'),
+              if (_history.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Text(
+                    'Imports you make appear here.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.brown.withOpacity(0.7),
+                    ),
+                  ),
+                ),
               for (final h in _history) ...[
-                _HistoryCard(file: h.$1, info: h.$2),
+                GestureDetector(
+                  onTap: () => showInfoSheet(
+                    context,
+                    title: h.$1,
+                    subtitle: 'Import details',
+                    rows: [('File', h.$1), ('Result', h.$2)],
+                  ),
+                  child: _HistoryCard(file: h.$1, info: h.$2),
+                ),
                 const SizedBox(height: 10),
               ],
             ],
@@ -138,7 +268,15 @@ class _StepTabs extends StatelessWidget {
 }
 
 class _UploadZone extends StatelessWidget {
-  const _UploadZone();
+  final String? fileName;
+  final bool busy;
+  final VoidCallback onChoose;
+
+  const _UploadZone({
+    required this.fileName,
+    required this.busy,
+    required this.onChoose,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -149,21 +287,31 @@ class _UploadZone extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
         child: Column(
           children: [
-            const Icon(Icons.arrow_upward, size: 30, color: AppColors.brown),
+            if (busy)
+              const SizedBox(
+                width: 28,
+                height: 28,
+                child: CircularProgressIndicator(
+                    strokeWidth: 3, color: AppColors.brown),
+              )
+            else
+              const Icon(Icons.arrow_upward, size: 30, color: AppColors.brown),
             const SizedBox(height: 8),
-            const Text(
-              'Drop a CSV or Excel file here',
-              style: TextStyle(fontSize: 14, color: AppColors.brown),
+            Text(
+              busy
+                  ? 'Checking file…'
+                  : (fileName ?? 'Drop a CSV or Excel file here'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14, color: AppColors.brown),
             ),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _PillButton('Choose file', filled: true, onTap: () {
-                  // TODO: open the file picker (add the file_picker package).
-                }),
+                _PillButton('Choose file', filled: true, onTap: onChoose),
                 const SizedBox(width: 10),
-                _PillButton('Download template', onTap: () {}),
+                _PillButton('Download template',
+                    onTap: () => showTemplateSheet(context)),
               ],
             ),
           ],
@@ -231,17 +379,63 @@ class _DashedRectPainter extends CustomPainter {
   bool shouldRepaint(covariant _DashedRectPainter old) => old.color != color;
 }
 
-class _PreviewCard extends StatelessWidget {
-  const _PreviewCard();
+// Turns the server's status text into a label and colour.
+(String, Color) _statusInfo(String status) {
+  switch (status) {
+    case 'ok':
+      return ('OK', _green);
+    case 'unmatched':
+      return ('Unmatched', AppColors.orange);
+    case 'bad_date':
+      return ('Bad date', AppColors.red);
+    case 'bad_quantity':
+      return ('Bad quantity', AppColors.red);
+    default:
+      final text = status.replaceAll('_', ' ');
+      final label = text.isEmpty
+          ? 'Unknown'
+          : '${text[0].toUpperCase()}${text.substring(1)}';
+      return (label, AppColors.red);
+  }
+}
 
-  Color _statusColor(String s) => switch (s) {
-        'OK' => _green,
-        'Unmatched' => AppColors.orange,
-        _ => AppColors.red,
-      };
+class _PreviewCard extends StatelessWidget {
+  final ImportResult? result;
+  final bool done;
+  final bool busy;
+  final VoidCallback onImport;
+
+  const _PreviewCard({
+    required this.result,
+    required this.done,
+    required this.busy,
+    required this.onImport,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final r = result;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.cream,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: r == null ? _empty() : _filled(r),
+    );
+  }
+
+  Widget _empty() => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          'Choose a file to check it here. Nothing is saved until you press '
+          '"Import valid rows".',
+          style: TextStyle(fontSize: 13, color: AppColors.brown),
+        ),
+      );
+
+  Widget _filled(ImportResult r) {
     const head = TextStyle(
       fontSize: 13,
       fontWeight: FontWeight.w700,
@@ -252,78 +446,90 @@ class _PreviewCard extends StatelessWidget {
     Widget pad(Widget w) =>
         Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: w);
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.cream,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Table(
-            columnWidths: const {
-              0: FlexColumnWidth(1.1),
-              1: FlexColumnWidth(2),
-              2: FlexColumnWidth(0.7),
-              3: FlexColumnWidth(1.4),
-            },
-            border: TableBorder(
-              horizontalInside:
-                  BorderSide(color: AppColors.brown.withOpacity(0.2)),
-            ),
-            children: [
-              TableRow(children: [
-                pad(const Text('Date', style: head)),
-                pad(const Text('Product', style: head)),
-                pad(const Text('Qty', style: head)),
-                pad(const Text('Status', style: head)),
-              ]),
-              for (final r in _previewRows)
-                TableRow(children: [
-                  pad(Text(r.$1, style: cell)),
-                  pad(Text(r.$2, style: cell)),
-                  pad(Text(r.$3, style: cell)),
-                  pad(Text(
-                    r.$4,
-                    style: cell.copyWith(
-                      color: _statusColor(r.$4),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  )),
-                ]),
-            ],
+    final shown = r.rows.take(_maxRowsShown).toList();
+    final hidden = r.rows.length - shown.length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Table(
+          columnWidths: const {
+            0: FlexColumnWidth(1.1),
+            1: FlexColumnWidth(1.9),
+            2: FlexColumnWidth(0.7),
+            3: FlexColumnWidth(1.5),
+          },
+          border: TableBorder(
+            horizontalInside:
+                BorderSide(color: AppColors.brown.withOpacity(0.2)),
           ),
-          const SizedBox(height: 8),
+          children: [
+            TableRow(children: [
+              pad(const Text('Date', style: head)),
+              pad(const Text('Product', style: head)),
+              pad(const Text('Qty', style: head)),
+              pad(const Text('Status', style: head)),
+            ]),
+            for (final row in shown)
+              TableRow(children: [
+                pad(Text(formatShortDate(row.saleDate), style: cell)),
+                pad(Text(row.name ?? row.product, style: cell)),
+                pad(Text(
+                  row.quantity == null ? '—' : formatQty(row.quantity!),
+                  style: cell,
+                )),
+                pad(Text(
+                  _statusInfo(row.status).$1,
+                  style: cell.copyWith(
+                    color: _statusInfo(row.status).$2,
+                    fontWeight: FontWeight.w600,
+                  ),
+                )),
+              ]),
+          ],
+        ),
+        if (hidden > 0) ...[
+          const SizedBox(height: 6),
           Text(
-            '1 OK · 1 unmatched · 1 error',
+            'and $hidden more rows',
             style: TextStyle(
               fontSize: 12,
               color: AppColors.brown.withOpacity(0.7),
             ),
           ),
-          const SizedBox(height: 10),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              height: 44,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.brown,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Text(
-                'Import valid rows',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.cream,
-                ),
+        ],
+        const SizedBox(height: 8),
+        Text(
+          '${r.ok} OK · ${r.unmatched} unmatched · '
+          '${r.errors} ${r.errors == 1 ? 'error' : 'errors'}',
+          style: TextStyle(
+            fontSize: 12,
+            color: AppColors.brown.withOpacity(0.7),
+          ),
+        ),
+        const SizedBox(height: 10),
+        GestureDetector(
+          onTap: done ? null : onImport,
+          child: Container(
+            height: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: done || busy
+                  ? AppColors.brown.withOpacity(0.45)
+                  : AppColors.brown,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              done ? 'Imported ${r.imported} rows' : 'Import valid rows',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: AppColors.cream,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
