@@ -7,7 +7,7 @@ class ApiConfig {
   /// Windows / web on the same laptop: http://localhost:8000
   /// Android emulator:  http://10.0.2.2:8000
   /// Real phone:        http://<laptop-ip-from-ipconfig>:8000
-  static String baseUrl = 'http://127.0.0.1:8000';
+  static String baseUrl = 'http://172.18.121.118:8000';
 
   static const Duration timeout = Duration(seconds: 15);
 }
