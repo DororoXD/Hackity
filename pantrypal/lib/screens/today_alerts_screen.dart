@@ -261,10 +261,12 @@ class _AlertTile extends StatelessWidget {
         return [
           CardAction('Discount ${alert.discountPct}%', filled: true,
               onTap: () async {
-            final pct =
-                await discountFlow(context, name, initial: alert.discountPct);
-            if (pct != null && context.mounted) {
-              await _patch(context, discountPct: pct);
+            final pct = await discountSheet(context,
+                product: name, initial: alert.discountPct);
+            if (pct == null || !context.mounted) return;
+            final ok = await _patch(context, discountPct: pct);
+            if (ok && context.mounted) {
+              showAppSnack(context, '$pct% discount applied to $name');
             }
           }),
           markUsed,

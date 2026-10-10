@@ -2,7 +2,7 @@
 class ApiConfig {
   /// true  = read the sample files in assets/mock/ (no server needed)
   /// false = call the real server at [baseUrl]
-  static bool useMock = true;
+  static bool useMock = false;
 
   /// Windows / web on the same laptop: http://localhost:8000
   /// Android emulator:  http://10.0.2.2:8000

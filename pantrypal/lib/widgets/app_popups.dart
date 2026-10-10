@@ -859,14 +859,11 @@ Future<void> showTemplateSheet(BuildContext context) async {
 // (replace the snackbar with a provider / API call later)
 // =====================================================================
 
-/// Returns the discount picked, or null if cancelled.
-Future<int?> discountFlow(BuildContext context, String product,
-    {int initial = 20}) async {
-  final pct = await discountSheet(context, product: product, initial: initial);
+Future<void> discountFlow(BuildContext context, String product) async {
+  final pct = await discountSheet(context, product: product);
   if (pct != null && context.mounted) {
     showAppSnack(context, '$pct% discount applied to $product');
   }
-  return pct;
 }
 
 /// Returns the quantity marked as used, or null if cancelled.
