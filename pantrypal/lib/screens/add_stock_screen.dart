@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
+import '../core/helpers.dart';
 import '../core/theme.dart';
+import '../models/batch_item.dart';
+import '../services/api_service.dart';
+import '../widgets/app_popups.dart';
 
-const _units = ['units', 'kg', 'g', 'L', 'packs'];
-const _storages = ['Fridge', 'Freezer', 'Ambient', 'Display'];
 const _quickDays = [3, 7, 14, 30];
-
-// Placeholder shelf-life guesses. Replace with the ML model's prediction later.
-const _sampleShelfLifeDays = {
-  'Fridge': 6,
-  'Freezer': 90,
-  'Ambient': 3,
-  'Display': 2,
-};
-
 const _infoBg = Color(0xFFDDEBD6);
 const _infoText = Color(0xFF2F6B45);
 
@@ -24,24 +17,27 @@ class AddStockScreen extends StatefulWidget {
 }
 
 class _AddStockScreenState extends State<AddStockScreen> {
-  final _product = TextEditingController();
-  final _quantity = TextEditingController(text: '12');
-  final _supplier = TextEditingController();
-  final _cost = TextEditingController();
-  final _notes = TextEditingController();
+  // Kept while the app runs, for "Use last entry".
+  static ({ProductItem product, double quantity})? _lastEntry;
 
-  String _unit = 'units';
-  String _storage = 'Fridge';
-  DateTime _received = DateTime.now();
-  DateTime? _expiry;
+  late final Future<(String, List<ProductItem>)> _future = _load();
+  final _quantity = TextEditingController(text: '10');
+  List<ProductItem> _products = const [];
+  ProductItem? _product;
+  DateTime? _today; // the server's date, not the phone's
+  DateTime? _received;
+  DateTime? _expiry; // null = received + the product's shelf life
+  bool _saving = false;
+
+  static Future<(String, List<ProductItem>)> _load() async {
+    final today = ApiService.fetchToday();
+    final products = ApiService.fetchProducts();
+    return (await today, await products);
+  }
 
   @override
   void dispose() {
-    _product.dispose();
     _quantity.dispose();
-    _supplier.dispose();
-    _cost.dispose();
-    _notes.dispose();
     super.dispose();
   }
 
@@ -50,256 +46,290 @@ class _AddStockScreenState extends State<AddStockScreen> {
       : '${d.day.toString().padLeft(2, '0')}/'
           '${d.month.toString().padLeft(2, '0')}/${d.year}';
 
+  String _iso(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+  // Last sellable day if the user does not pick one: the arrival day counts as day 1.
+  DateTime? get _defaultExpiry => (_received == null || _product == null)
+      ? null
+      : _received!.add(Duration(days: _product!.shelfLifeDays - 1));
+
   Future<void> _pickDate({required bool isExpiry}) async {
-    final initial = isExpiry ? (_expiry ?? _received) : _received;
+    final base = _received ?? _today ?? DateTime.now();
     final picked = await showDatePicker(
       context: context,
-      initialDate: initial,
+      initialDate: isExpiry ? (_expiry ?? _defaultExpiry ?? base) : base,
       firstDate: DateTime(2020),
       lastDate: DateTime(2100),
     );
     if (picked == null) return;
-    setState(() => isExpiry ? _expiry = picked : _received = picked);
+    setState(() {
+      if (isExpiry) {
+        _expiry = picked;
+      } else {
+        _received = picked;
+      }
+    });
   }
 
-  void _save({required bool addAnother}) {
-    if (_product.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter a product name first')),
-      );
+  Future<void> _chooseProduct() async {
+    if (_products.isEmpty) return;
+    final i = await pickFromListSheet(
+      context,
+      title: 'Choose product',
+      subtitle: 'From the product catalogue',
+      items: [
+        for (final p in _products)
+          (p.name, '${p.category} · ${p.unit} · keeps ${p.shelfLifeDays} days'),
+      ],
+    );
+    if (i != null) setState(() => _product = _products[i]);
+  }
+
+  Future<void> _scanBarcode() async {
+    final code = await barcodeDialog(context);
+    if (code == null || code.isEmpty || !mounted) return;
+    final id = int.tryParse(code);
+    final match = _products.where((p) =>
+        p.productId == id || p.name.toLowerCase() == code.toLowerCase());
+    if (match.isEmpty) {
+      showAppSnack(context, 'No product with code $code. Try a catalogue number, e.g. 41.');
       return;
     }
-    // TODO: send the new batch to your provider / API here.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Saved ${_product.text.trim()}')),
-    );
+    setState(() => _product = match.first);
+  }
+
+  void _useLastEntry() {
+    final last = _lastEntry;
+    if (last == null) {
+      showAppSnack(context, 'Nothing saved yet. Save a batch first.');
+      return;
+    }
     setState(() {
-      _product.clear();
-      _quantity.text = '12';
-      _expiry = null;
-      _received = DateTime.now();
-      _supplier.clear();
-      _cost.clear();
-      _notes.clear();
+      _product = last.product;
+      _quantity.text = formatQty(last.quantity);
     });
+  }
+
+  Future<void> _save({required bool addAnother}) async {
+    final product = _product;
+    final qty = double.tryParse(_quantity.text.trim().replaceAll(',', '.'));
+    if (product == null) {
+      showAppSnack(context, 'Choose a product first');
+      return;
+    }
+    if (qty == null || qty <= 0) {
+      showAppSnack(context, 'Enter a quantity above 0');
+      return;
+    }
+    if (_saving) return;
+    setState(() => _saving = true);
+    try {
+      final batch = await ApiService.createBatch(
+        productId: product.productId,
+        quantity: qty,
+        receivedDate: _received == null ? null : _iso(_received!),
+        expiryDate: _expiry == null ? null : _iso(_expiry!),
+      );
+      _lastEntry = (product: product, quantity: qty);
+      if (!mounted) return;
+      showAppSnack(
+          context,
+          'Saved ${formatQty(batch.quantity)} ${batch.unit} ${batch.name} '
+          '(batch #${batch.id}), sell by ${formatShortDate(batch.expiryDate)}');
+      setState(() {
+        _saving = false;
+        _expiry = null;
+        if (!addAnother) {
+          _product = null;
+          _quantity.text = '10';
+          _received = _today;
+        }
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _saving = false);
+      showAppSnack(context, e.toString());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final shelfLife = _sampleShelfLifeDays[_storage]!;
-    return Column(
+    return FutureBuilder<(String, List<ProductItem>)>(
+      future: _future,
+      builder: (context, snap) {
+        if (snap.hasData && _today == null) {
+          _today = DateTime.tryParse(snap.data!.$1);
+          _received ??= _today;
+          _products = snap.data!.$2;
+        }
+        return Column(
+          children: [
+            Container(
+              width: double.infinity,
+              color: AppColors.brown,
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Add Stock',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.peach,
+                    ),
+                  ),
+                  Text(
+                    snap.hasData ? formatLongDate(snap.data!.$1) : '',
+                    style: const TextStyle(fontSize: 13, color: AppColors.cream),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: snap.hasError
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(snap.error.toString(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: AppColors.brown)),
+                      ),
+                    )
+                  : !snap.hasData
+                      ? const Center(
+                          child: CircularProgressIndicator(color: AppColors.brown))
+                      : _form(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _form(BuildContext context) {
+    final product = _product;
+    final expiry = _expiry ?? _defaultExpiry;
+    return ListView(
+      padding: const EdgeInsets.all(12),
       children: [
-        // Header
+        Row(
+          children: [
+            _BigButton('Scan barcode', filled: true, onTap: _scanBarcode),
+            const SizedBox(width: 10),
+            _BigButton('Use last entry', onTap: _useLastEntry),
+          ],
+        ),
+        const SizedBox(height: 14),
+        const _Label('Product'),
+        GestureDetector(
+          onTap: _chooseProduct,
+          child: Container(
+            height: 50,
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            decoration: BoxDecoration(
+              color: AppColors.cream,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    product == null
+                        ? 'Tap to choose, e.g. Tomatoes'
+                        : '${product.name} · ${product.category}',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: product == null
+                          ? AppColors.brown.withOpacity(0.45)
+                          : AppColors.brown,
+                    ),
+                  ),
+                ),
+                const Icon(Icons.expand_more, color: AppColors.brown),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+        _Label('Quantity${product == null ? '' : ' (${product.unit})'}'),
+        _field(
+          controller: _quantity,
+          keyboard: const TextInputType.numberWithOptions(decimal: true),
+        ),
+        const SizedBox(height: 14),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _Label('Received'),
+                  _DateBox(
+                    text: _fmt(_received),
+                    isSet: true,
+                    onTap: () => _pickDate(isExpiry: false),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _Label('Last sellable day'),
+                  _DateBox(
+                    text: _fmt(expiry),
+                    isSet: _expiry != null,
+                    onTap: () => _pickDate(isExpiry: true),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          children: [
+            for (final d in _quickDays)
+              _Chip(
+                '+${d}d',
+                selected: false,
+                onTap: () => setState(() => _expiry =
+                    (_received ?? _today ?? DateTime.now()).add(Duration(days: d))),
+              ),
+          ],
+        ),
+        const SizedBox(height: 14),
         Container(
-          width: double.infinity,
-          color: AppColors.brown,
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 14),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Add Stock',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.peach,
-                ),
-              ),
-              Text(
-                'Sat 10 Oct',
-                style: TextStyle(fontSize: 13, color: AppColors.cream),
-              ),
-            ],
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: _infoBg,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            product == null
+                ? 'Choose a product to see its shelf life.'
+                : '${product.name} keeps ${product.shelfLifeDays} days'
+                    '${_expiry == null ? ', so the last sellable day is set for you. Change it if the label says otherwise.' : '. You set the last sellable day yourself.'}',
+            style: const TextStyle(fontSize: 13, color: _infoText),
           ),
         ),
-        // Form
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(12),
-            children: [
-              Row(
-                children: [
-                  _BigButton('Scan barcode', filled: true, onTap: () {}),
-                  const SizedBox(width: 10),
-                  _BigButton('Use last entry', onTap: () {}),
-                ],
-              ),
-              const SizedBox(height: 14),
-              const _Label('Product'),
-              _field(controller: _product, hint: 'Start typing, e.g. Fresh Milk 1L'),
-              const SizedBox(height: 14),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const _Label('Quantity'),
-                        _field(
-                          controller: _quantity,
-                          keyboard: TextInputType.number,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const _Label('Unit'),
-                        DropdownButtonFormField<String>(
-                          value: _unit,
-                          dropdownColor: AppColors.cream,
-                          decoration: _decoration(null),
-                          style: const TextStyle(
-                              fontSize: 15, color: AppColors.brown),
-                          items: [
-                            for (final u in _units)
-                              DropdownMenuItem(value: u, child: Text(u)),
-                          ],
-                          onChanged: (v) => setState(() => _unit = v!),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const _Label('Received'),
-                        _DateBox(
-                          text: _fmt(_received),
-                          isSet: true,
-                          onTap: () => _pickDate(isExpiry: false),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const _Label('Expiry date'),
-                        _DateBox(
-                          text: _fmt(_expiry),
-                          isSet: _expiry != null,
-                          onTap: () => _pickDate(isExpiry: true),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                children: [
-                  for (final d in _quickDays)
-                    _Chip(
-                      '+${d}d',
-                      selected: false,
-                      onTap: () => setState(
-                          () => _expiry = _received.add(Duration(days: d))),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              const _Label('Storage'),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final s in _storages)
-                    _Chip(
-                      s,
-                      selected: s == _storage,
-                      onTap: () => setState(() => _storage = s),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.cream,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Theme(
-                  data: Theme.of(context)
-                      .copyWith(dividerColor: Colors.transparent),
-                  child: ExpansionTile(
-                    title: Text(
-                      'More details (supplier, cost, notes)',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.brown.withOpacity(0.8),
-                      ),
-                    ),
-                    iconColor: AppColors.brown,
-                    collapsedIconColor: AppColors.brown,
-                    childrenPadding:
-                        const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                    children: [
-                      _field(controller: _supplier, hint: 'Supplier'),
-                      const SizedBox(height: 8),
-                      _field(
-                        controller: _cost,
-                        hint: 'Cost (RM)',
-                        keyboard: TextInputType.number,
-                      ),
-                      const SizedBox(height: 8),
-                      _field(controller: _notes, hint: 'Notes', lines: 2),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: _infoBg,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text.rich(
-                  TextSpan(
-                    style: const TextStyle(fontSize: 13, color: _infoText),
-                    children: [
-                      const TextSpan(text: 'Predicted shelf life: '),
-                      TextSpan(
-                        text: '$shelfLife days',
-                        style: const TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                      TextSpan(
-                        text: _expiry == null
-                            ? ' in $_storage. Add the expiry date to improve accuracy.'
-                            : ' in $_storage.',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  _BigButton('Save',
-                      filled: true, onTap: () => _save(addAnother: false)),
-                  const SizedBox(width: 10),
-                  _BigButton('Save & add another',
-                      onTap: () => _save(addAnother: true)),
-                ],
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            _BigButton(_saving ? 'Saving…' : 'Save',
+                filled: true, onTap: () => _save(addAnother: false)),
+            const SizedBox(width: 10),
+            _BigButton('Save & add another',
+                onTap: () => _save(addAnother: true)),
+          ],
         ),
+        const SizedBox(height: 8),
       ],
     );
   }
@@ -321,12 +351,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
     required TextEditingController controller,
     String? hint,
     TextInputType? keyboard,
-    int lines = 1,
   }) =>
       TextField(
         controller: controller,
         keyboardType: keyboard,
-        maxLines: lines,
         style: const TextStyle(fontSize: 15, color: AppColors.brown),
         decoration: _decoration(hint),
       );

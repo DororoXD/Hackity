@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/alert_item.dart';
+import '../models/batch_item.dart';
 import '../models/import_result.dart';
 
 /// Reads the sample JSON files in assets/mock/ so the app works without a server.
@@ -9,6 +10,24 @@ class MockService {
     final text = await rootBundle.loadString('assets/mock/$file');
     return json.decode(text) as Map<String, dynamic>;
   }
+
+  static Future<List<dynamic>> _loadList(String file) async =>
+      json.decode(await rootBundle.loadString('assets/mock/$file')) as List<dynamic>;
+
+  static Future<String> today() async => (await _load('today.json'))['today'].toString();
+
+  static Future<List<BatchItem>> batches() async => [
+        for (final b in await _loadList('batches.json'))
+          BatchItem.fromJson(Map<String, dynamic>.from(b as Map)),
+      ];
+
+  static Future<List<ProductItem>> products() async => [
+        for (final p in await _loadList('products.json'))
+          ProductItem.fromJson(Map<String, dynamic>.from(p as Map)),
+      ];
+
+  static Future<BatchItem> batchCreated() async =>
+      BatchItem.fromJson(await _load('batch_created.json'));
 
   static Future<AlertsResponse> alerts() async {
     await Future.delayed(const Duration(milliseconds: 300));

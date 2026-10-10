@@ -74,7 +74,7 @@ class ImportHistoryItem {
       ImportHistoryItem(
         filename: (j['filename'] ?? j['file_name'] ?? j['file'] ?? 'Import')
             .toString(),
-        when: (j['imported_at'] ?? j['created_at'] ?? j['date'])?.toString(),
+        when: (j['imported_on'] ?? j['imported_at'] ?? j['created_at'] ?? j['date'])?.toString(),
         rowsImported: (j['rows_imported'] as num?)?.toInt() ?? 0,
         rowsRejected: (j['rows_rejected'] as num?)?.toInt() ?? 0,
       );

@@ -18,11 +18,18 @@ class TodayAlertsScreen extends StatefulWidget {
 class _TodayAlertsScreenState extends State<TodayAlertsScreen> {
   late Future<AlertsResponse> _future = ApiService.fetchAlerts();
 
-  void _reload() => setState(() => _future = ApiService.fetchAlerts());
+  // setState must not get a closure that returns a Future, so use a block body.
+  void _reload() {
+    setState(() {
+      _future = ApiService.fetchAlerts();
+    });
+  }
 
   Future<void> _refresh() async {
     final f = ApiService.fetchAlerts();
-    setState(() => _future = f);
+    setState(() {
+      _future = f;
+    });
     try {
       await f;
     } catch (_) {
@@ -176,7 +183,7 @@ class _AlertsBody extends StatelessWidget {
 
         ..._section(context, 'Expired / Expires Today', expired),
         ..._section(context, 'Predicted to Spoil Easily', predicted),
-        ..._section(context, '1-3 Days', soon),
+        ..._section(context, 'Next 2 Days', soon),
       ],
     );
   }
@@ -210,23 +217,26 @@ class _AlertTile extends StatelessWidget {
   final VoidCallback onChanged;
   const _AlertTile({required this.alert, required this.onChanged});
 
-  // Saves the change to the backend when the whole batch is used or discarded.
+  // Mark used / Discard: the whole batch changes status; part of it lowers the quantity left.
   Future<void> _save(BuildContext context, int? qty, String status) async {
     if (qty == null) return;
-    if (qty < _units) {
-      showAppSnack(context, 'Partial updates are not saved yet');
-      return;
+    if (qty >= _units) {
+      await _patch(context, status: status);
+    } else {
+      final left = math.max(0.0, alert.quantity - qty);
+      await _patch(context, quantity: double.parse(left.toStringAsFixed(1)));
     }
-    await _patch(context, status: status);
   }
 
-  // Sends PATCH /batches/{id}, then reloads the alerts so this one drops off.
+  // Sends PATCH /batches/{id}, shows [done], then reloads the alerts so this one
+  // drops off. The message goes first: the reload removes this card's context.
   // Returns false (after showing the error) if the save failed.
   Future<bool> _patch(BuildContext context,
-      {String? status, int? discountPct}) async {
+      {double? quantity, String? status, int? discountPct, String? done}) async {
     try {
       await ApiService.updateBatch(alert.batchId,
-          status: status, discountPct: discountPct);
+          quantity: quantity, status: status, discountPct: discountPct);
+      if (done != null && context.mounted) showAppSnack(context, done);
       onChanged();
       return true;
     } catch (e) {
@@ -264,10 +274,8 @@ class _AlertTile extends StatelessWidget {
             final pct = await discountSheet(context,
                 product: name, initial: alert.discountPct);
             if (pct == null || !context.mounted) return;
-            final ok = await _patch(context, discountPct: pct);
-            if (ok && context.mounted) {
-              showAppSnack(context, '$pct% discount applied to $name');
-            }
+            await _patch(context,
+                discountPct: pct, done: '$pct% discount applied to $name');
           }),
           markUsed,
         ];
@@ -283,10 +291,8 @@ class _AlertTile extends StatelessWidget {
       case 'donate':
         return [
           CardAction('Donate', filled: true, onTap: () async {
-            final ok = await _patch(context, status: 'donated');
-            if (ok && context.mounted) {
-              showAppSnack(context, 'Donation noted for $name');
-            }
+            await _patch(context,
+                status: 'donated', done: 'Donation noted for $name');
           }),
           CardAction('Discard', onTap: () async {
             final q = await discardFlow(context, name, _units);

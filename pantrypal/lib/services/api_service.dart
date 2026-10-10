@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../core/constants.dart';
 import '../models/alert_item.dart';
+import '../models/batch_item.dart';
 import '../models/import_result.dart';
 import 'mock_service.dart';
 
@@ -25,10 +26,53 @@ class ApiService {
     return AlertsResponse.fromJson(_decode(res));
   }
 
-  /// PATCH /batches/{id}  with status: sold_out | discarded | donated,
-  /// and/or discountPct: 0 to 90 (0 takes the markdown off)
+  /// GET /today: the date the server runs on ("2024-06-20" in the demo).
+  static Future<String> fetchToday() async {
+    if (ApiConfig.useMock) return MockService.today();
+    final res = await _send(() => http.get(Uri.parse('${ApiConfig.baseUrl}/today')));
+    return _decode(res)['today']?.toString() ?? '';
+  }
+
+  /// GET /batches: active batches, soonest to expire first.
+  static Future<List<BatchItem>> fetchBatches() async {
+    if (ApiConfig.useMock) return MockService.batches();
+    final res = await _send(() => http.get(Uri.parse('${ApiConfig.baseUrl}/batches')));
+    return [for (final b in _decodeList(res)) BatchItem.fromJson(b)];
+  }
+
+  /// GET /products: the product catalogue (name, category, unit, shelf life).
+  static Future<List<ProductItem>> fetchProducts() async {
+    if (ApiConfig.useMock) return MockService.products();
+    final res = await _send(() => http.get(Uri.parse('${ApiConfig.baseUrl}/products')));
+    return [for (final p in _decodeList(res)) ProductItem.fromJson(p)];
+  }
+
+  /// POST /batches. Leave the dates out to use the server's today and the
+  /// product's shelf life.
+  static Future<BatchItem> createBatch({
+    required int productId,
+    required double quantity,
+    String? receivedDate,
+    String? expiryDate,
+  }) async {
+    if (ApiConfig.useMock) return MockService.batchCreated();
+    final res = await _send(() => http.post(
+          Uri.parse('${ApiConfig.baseUrl}/batches'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'product_id': productId,
+            'quantity': quantity,
+            if (receivedDate != null) 'received_date': receivedDate,
+            if (expiryDate != null) 'expiry_date': expiryDate,
+          }),
+        ));
+    return BatchItem.fromJson(_decode(res));
+  }
+
+  /// PATCH /batches/{id} with any of: quantity (what is left; 0 marks it sold
+  /// out), status (sold_out | discarded | donated), discountPct (0 to 90).
   static Future<void> updateBatch(int batchId,
-      {String? status, int? discountPct}) async {
+      {double? quantity, String? status, int? discountPct}) async {
     if (ApiConfig.useMock) {
       await Future.delayed(const Duration(milliseconds: 300));
       return;
@@ -37,6 +81,7 @@ class ApiService {
           Uri.parse('${ApiConfig.baseUrl}/batches/$batchId'),
           headers: {'Content-Type': 'application/json'},
           body: json.encode({
+            if (quantity != null) 'quantity': quantity,
             if (status != null) 'status': status,
             if (discountPct != null) 'discount_pct': discountPct,
           }),
@@ -111,7 +156,24 @@ class ApiService {
     }
   }
 
+  static List<Map<String, dynamic>> _decodeList(http.Response res) {
+    final body = _decodeAny(res);
+    if (body is! List) {
+      throw const ApiException('The server sent a response the app could not read.');
+    }
+    return [for (final e in body) Map<String, dynamic>.from(e as Map)];
+  }
+
   static Map<String, dynamic> _decode(http.Response res) {
+    final body = _decodeAny(res);
+    if (body is! Map<String, dynamic>) {
+      throw const ApiException('The server sent a response the app could not read.');
+    }
+    return body;
+  }
+
+  // Any 2xx is success (POST /batches answers 201); otherwise show the server's "detail".
+  static dynamic _decodeAny(http.Response res) {
     dynamic body;
     try {
       body = json.decode(utf8.decode(res.bodyBytes));
@@ -119,16 +181,13 @@ class ApiService {
       body = null;
     }
 
-    if (res.statusCode != 200) {
+    if (res.statusCode < 200 || res.statusCode >= 300) {
       final detail = body is Map ? body['detail'] : null;
       throw ApiException(
         detail != null
             ? detail.toString()
             : 'The server returned an error (${res.statusCode}).',
       );
-    }
-    if (body is! Map<String, dynamic>) {
-      throw const ApiException('The server sent a response the app could not read.');
     }
     return body;
   }
