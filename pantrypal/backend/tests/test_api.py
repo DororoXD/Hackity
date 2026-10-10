@@ -178,3 +178,86 @@ def test_alerts_hide_monitor_unless_asked(client):
 
     everything = client.get("/alerts", params={"today": "2026-10-11", "include_monitor": True}).json()
     assert sorted(a["action"] for a in everything["alerts"]) == ["monitor", "remove"]
+
+
+def test_sales_import_refuses_excel_and_binary_files(client):
+    import io
+    import zipfile
+
+    xlsx = io.BytesIO()
+    with zipfile.ZipFile(xlsx, "w") as z:  # an .xlsx file is a zip archive
+        z.writestr("xl/workbook.xml", "<workbook/>")
+    old_xls = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1" + bytes(64)
+    for name, data in [("sales.xlsx", xlsx.getvalue()), ("sales.xls", old_xls), ("photo.png", b"\x89PNG\r\n\x00\x00")]:
+        response = client.post("/sales/import", files={"file": (name, data)})
+        assert response.status_code == 400, name
+        assert response.json()["detail"] == "Only CSV files can be imported. In Excel, use File > Save As > CSV."
+
+
+def test_sales_import_reads_csv_saved_by_excel_on_windows(client):
+    # Excel's "CSV (Comma delimited)" is cp1252, not UTF-8: here a pound sign in an extra column.
+    csv = "date,product,quantity,note\r\n20/06/2024,Tomatoes,3,\xa32 off\r\n".encode("cp1252")
+    result = client.post("/sales/import", params={"dry_run": True}, files={"file": ("sales.csv", csv)}).json()
+    assert (result["ok"], result["rows"][0]["name"]) == (1, "Tomatoes")
+
+
+def _discount_and_remove_alerts(client):
+    """Tomatoes: 12 kg expiring in 2 days that sell 2 kg a day (a discount alert). Spinach: expired."""
+    client.post("/batches", json={"product_id": TOMATOES, "quantity": 14, "received_date": "2026-10-02",
+                                  "expiry_date": "2026-10-09"})  # on the shelf all week; absorbs the sales
+    csv = "date,product,quantity\n" + "".join(f"2026-10-0{d},41,2\n" for d in range(3, 10))
+    client.post("/sales/import", files={"file": ("pos.csv", csv)})
+    tomatoes = client.post("/batches", json={"product_id": TOMATOES, "quantity": 12, "received_date": "2026-10-01",
+                                             "expiry_date": "2026-10-12"}).json()
+    spinach = client.post("/batches", json={"product_id": 140, "quantity": 3, "received_date": "2026-10-01",
+                                            "expiry_date": "2026-10-09"}).json()
+    return tomatoes["id"], spinach["id"]
+
+
+def _actions(client, today="2026-10-10"):
+    return {a["name"]: a["action"] for a in client.get("/alerts", params={"today": today}).json()["alerts"]}
+
+
+def test_alert_buttons_are_saved_and_clear_their_alerts(client):
+    tomatoes, spinach = _discount_and_remove_alerts(client)
+    assert _actions(client) == {"Spinach": "remove", "Tomatoes": "discount"}
+
+    batch = client.patch(f"/batches/{tomatoes}", json={"discount_pct": 20}).json()
+    assert (batch["discount_pct"], batch["status"]) == (20, "active")
+    assert _actions(client) == {"Spinach": "remove"}  # marked down, so no longer flagged
+
+    client.patch(f"/batches/{spinach}", json={"status": "donated"})
+    assert _actions(client) == {}
+    assert [b["id"] for b in client.get("/batches", params={"status": "donated"}).json()] == [spinach]
+
+    # The marked-down Tomatoes come back once they expire unsold.
+    assert _actions(client, today="2026-10-13") == {"Tomatoes": "remove"}
+
+
+def test_mark_used_to_zero_sells_the_batch_out(client):
+    batch = client.post("/batches", json={"product_id": TOMATOES, "quantity": 5}).json()
+    assert client.patch(f"/batches/{batch['id']}", json={"quantity": 2}).json()["status"] == "active"
+    assert client.patch(f"/batches/{batch['id']}", json={"quantity": 0}).json()["status"] == "sold_out"
+
+
+def test_discount_must_be_between_0_and_90(client):
+    batch = client.post("/batches", json={"product_id": TOMATOES, "quantity": 5}).json()
+    assert client.patch(f"/batches/{batch['id']}", json={"discount_pct": 95}).status_code == 422
+    assert client.patch(f"/batches/{batch['id']}", json={"discount_pct": -5}).status_code == 422
+
+
+def test_existing_database_gets_the_discount_column(tmp_path):
+    import database
+    from sqlmodel import SQLModel, create_engine
+
+    old = create_engine(f"sqlite:///{tmp_path / 'old.db'}")
+    SQLModel.metadata.create_all(old)
+    with old.begin() as conn:  # a database made before batches had discount_pct
+        conn.exec_driver_sql("ALTER TABLE batch DROP COLUMN discount_pct")
+    saved, database.engine = database.engine, old
+    try:
+        database.init_db()
+    finally:
+        database.engine = saved
+    with old.begin() as conn:
+        assert "discount_pct" in {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(batch)")}

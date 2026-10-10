@@ -13,6 +13,7 @@ from schemas import ImportRecord, ImportRow, RowStatus, SalesImportResult
 router = APIRouter(prefix="/sales", tags=["sales"])
 
 DATE_FORMATS = ("%Y-%m-%d", "%d/%m/%Y")  # 2024-06-20 or 20/06/2024
+NOT_CSV = "Only CSV files can be imported. In Excel, use File > Save As > CSV."
 
 
 def consume_fifo(session: Session, product_id: int, quantity: float, sale_date: date):
@@ -29,6 +30,20 @@ def consume_fifo(session: Session, product_id: int, quantity: float, sale_date: 
         quantity -= taken
         if batch.quantity <= 0:
             batch.status = "sold_out"
+
+
+def read_csv_text(data: bytes) -> str:
+    """The upload as text. Excel and other binary files are refused with a 400, not a crash."""
+    if data.startswith((b"PK\x03\x04", b"\xd0\xcf\x11\xe0")) or b"\x00" in data:  # .xlsx, .xls, binary
+        raise HTTPException(400, NOT_CSV)
+    try:
+        return data.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        pass
+    try:
+        return data.decode("cp1252")  # what Excel on Windows writes for "CSV (Comma delimited)"
+    except UnicodeDecodeError:
+        raise HTTPException(400, NOT_CSV)
 
 
 def parse_date(text: str) -> Optional[date]:
@@ -59,7 +74,7 @@ async def import_sales(file: UploadFile, date_column: str = "date", product_colu
     Map step); spaces and capitals in column names don't matter. Use dry_run=true to preview without
     saving. Saved sales come out of stock, soonest-expiring batch first.
     """
-    reader = csv.DictReader(io.StringIO((await file.read()).decode("utf-8-sig")))
+    reader = csv.DictReader(io.StringIO(read_csv_text(await file.read())))
     reader.fieldnames = [h.strip() for h in reader.fieldnames or []]
     headers = {h.lower(): h for h in reader.fieldnames}
     missing = [c for c in (date_column, product_column, quantity_column) if c.strip().lower() not in headers]

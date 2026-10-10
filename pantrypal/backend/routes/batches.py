@@ -15,7 +15,7 @@ def to_out(batch: Batch, product: Product, today: date) -> BatchOut:
     return BatchOut(
         id=batch.id, product_id=batch.product_id, name=product.name, unit=product.unit,
         quantity=batch.quantity, received_date=batch.received_date, expiry_date=batch.expiry_date,
-        days_left=(batch.expiry_date - today).days, status=batch.status,
+        days_left=(batch.expiry_date - today).days, status=batch.status, discount_pct=batch.discount_pct,
     )
 
 
@@ -49,14 +49,19 @@ def create_batch(body: BatchCreate, session: Session = Depends(get_session)):
 
 @router.patch("/{batch_id}", response_model=BatchOut)
 def update_batch(batch_id: int, body: BatchUpdate, session: Session = Depends(get_session)):
-    """Correct the remaining quantity, or mark the batch sold out or discarded."""
+    """What the alert buttons save: the quantity left (Mark used), a discount put on the batch,
+    or the batch sold out, discarded or donated."""
     batch = session.get(Batch, batch_id)
     if batch is None:
         raise HTTPException(404, f"Unknown batch {batch_id}")
     if body.quantity is not None:
         batch.quantity = body.quantity
+        if body.quantity == 0 and body.status is None:
+            batch.status = "sold_out"
     if body.status is not None:
         batch.status = body.status.value
+    if body.discount_pct is not None:
+        batch.discount_pct = body.discount_pct
     session.commit()
     session.refresh(batch)
     return to_out(batch, session.get(Product, batch.product_id), clock.today())

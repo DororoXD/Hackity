@@ -72,6 +72,8 @@ def build_alerts(session: Session, today: date) -> list[Alert]:
     alerts = []
     for rec in recommend(batches, forecasts, sku_params, elasticity, today).itertuples():
         batch, product = by_id[rec.batch_id]
+        if batch.discount_pct and rec.issue_type != "expired":
+            continue  # already marked down; it comes back only if it expires unsold
         days_left = (batch.expiry_date - today).days
         alerts.append(Alert(
             batch_id=batch.id, product_id=product.product_id, name=product.name, quantity=batch.quantity,

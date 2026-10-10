@@ -19,7 +19,7 @@ Use dates and `days_left` from the API rather than the phone's clock: the demo r
 | Stock totals | `GET /stock` | `stock.json` |
 | Add Stock: product picker | `GET /products` | `products.json` |
 | Add Stock: save | `POST /batches` | `batch_created.json` |
-| Batch detail: edit quantity, mark sold out or discarded | `PATCH /batches/{id}` | same shape as `batch_created.json` |
+| Alert buttons and batch detail: mark used, discount, discard, donate | `PATCH /batches/{id}` | same shape as `batch_created.json` |
 | Delete a batch | `DELETE /batches/{id}` | none (204) |
 | Sales import: preview | `POST /sales/import?dry_run=true` | `sales_import_preview.json` |
 | Sales import: import valid rows | `POST /sales/import` | `sales_import_done.json` |
@@ -51,7 +51,19 @@ Pick `product_id` from `GET /products`, which has each product's `name`, `unit` 
 Supplier, cost, notes and storage location are not stored yet.
 
 ### `PATCH /batches/{id}`
-Body with either or both: `{"quantity": 8}` (what is left) and `{"status": "discarded"}`.
+What each alert button sends (any combination of the three fields works):
+
+| Button | Body |
+|---|---|
+| Discount | `{"discount_pct": 20}` (use the alert's `discount_pct`; `0` takes the markdown off) |
+| Mark used (some) | `{"quantity": 8}`, what is left |
+| Mark used (all) | `{"status": "sold_out"}` or `{"quantity": 0}` |
+| Discard | `{"status": "discarded"}` |
+| Donate | `{"status": "donated"}` |
+
+A discounted batch drops off `/alerts`; it comes back as `remove` only if it expires unsold.
+Sold out, discarded and donated batches leave the alerts and the stock totals.
+`discount_pct` must be 0 to 90, otherwise the response is `422`.
 
 ### `POST /sales/import`
 Multipart upload with the file in a field named `file`. Query parameters:
@@ -72,6 +84,6 @@ Returns every row with its `status`, plus the counts `ok`, `unmatched`, `errors`
 | Alert `priority` | `high` (expired, or expires today or tomorrow), `medium` (later) |
 | Alert `discount_pct` | `0`, `10`, `20` or `30` |
 | Alert `risk` | A number from 0 to 1: the chance some of the batch goes unsold. Show as a percentage |
-| Batch `status` | `active`, `sold_out`, `discarded` |
+| Batch `status` | `active`, `sold_out`, `discarded`, `donated` |
 | Sales row `status` | `ok`, `unmatched` (product not in the catalog), `bad_date`, `bad_quantity` |
 | Product `unit` | `kg`, `packs`, `loaves`, `trays`, `bunches` |

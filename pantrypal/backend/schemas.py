@@ -10,6 +10,7 @@ class BatchStatus(str, Enum):
     active = "active"
     sold_out = "sold_out"
     discarded = "discarded"
+    donated = "donated"
 
 
 class IssueType(str, Enum):
@@ -53,8 +54,9 @@ class BatchCreate(BaseModel):
 
 
 class BatchUpdate(BaseModel):
-    quantity: Optional[float] = Field(default=None, ge=0)
+    quantity: Optional[float] = Field(default=None, ge=0)  # what is left; 0 marks the batch sold out
     status: Optional[BatchStatus] = None
+    discount_pct: Optional[int] = Field(default=None, ge=0, le=90)  # markdown put on the batch; 0 removes it
 
 
 class BatchOut(BaseModel):
@@ -67,6 +69,7 @@ class BatchOut(BaseModel):
     expiry_date: date
     days_left: int  # negative once expired
     status: BatchStatus
+    discount_pct: int  # markdown applied to the batch; 0 = full price
 
 
 class StockItem(BaseModel):

@@ -28,7 +28,8 @@ class Batch(SQLModel, table=True):
     quantity: float  # remaining, in the product's unit
     received_date: date
     expiry_date: date  # last day the batch can be sold
-    status: str = "active"  # active | sold_out | discarded
+    status: str = "active"  # active | sold_out | discarded | donated
+    discount_pct: int = 0  # markdown already applied to this batch; 0 = full price
 
 
 class Sale(SQLModel, table=True):
@@ -55,6 +56,10 @@ def get_session():
 def init_db():
     """Create the tables and load the product catalog the first time."""
     SQLModel.metadata.create_all(engine)
+    with engine.begin() as conn:  # databases made before batches had discount_pct
+        columns = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(batch)")}
+        if "discount_pct" not in columns:
+            conn.exec_driver_sql("ALTER TABLE batch ADD COLUMN discount_pct INTEGER NOT NULL DEFAULT 0")
     with Session(engine) as session:
         if session.exec(select(Product)).first() is not None:
             return

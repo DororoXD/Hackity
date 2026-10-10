@@ -8,7 +8,8 @@
     "received_date": "2024-06-18",
     "expiry_date": "2024-06-19",
     "days_left": -1,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 44,
@@ -19,7 +20,8 @@
     "received_date": "2024-06-13",
     "expiry_date": "2024-06-19",
     "days_left": -1,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 8,
@@ -30,7 +32,8 @@
     "received_date": "2024-06-15",
     "expiry_date": "2024-06-20",
     "days_left": 0,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 29,
@@ -41,7 +44,8 @@
     "received_date": "2024-06-18",
     "expiry_date": "2024-06-20",
     "days_left": 0,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 35,
@@ -52,7 +56,8 @@
     "received_date": "2024-06-18",
     "expiry_date": "2024-06-20",
     "days_left": 0,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 39,
@@ -63,7 +68,8 @@
     "received_date": "2024-06-15",
     "expiry_date": "2024-06-20",
     "days_left": 0,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 48,
@@ -74,7 +80,8 @@
     "received_date": "2024-06-15",
     "expiry_date": "2024-06-20",
     "days_left": 0,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 10,
@@ -85,7 +92,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-21",
     "days_left": 1,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 12,
@@ -96,7 +104,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-21",
     "days_left": 1,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 21,
@@ -107,7 +116,8 @@
     "received_date": "2024-06-19",
     "expiry_date": "2024-06-21",
     "days_left": 1,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 24,
@@ -118,7 +128,8 @@
     "received_date": "2024-06-19",
     "expiry_date": "2024-06-21",
     "days_left": 1,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 27,
@@ -129,7 +140,8 @@
     "received_date": "2024-06-15",
     "expiry_date": "2024-06-21",
     "days_left": 1,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 51,
@@ -140,7 +152,8 @@
     "received_date": "2024-06-12",
     "expiry_date": "2024-06-21",
     "days_left": 1,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 54,
@@ -151,7 +164,8 @@
     "received_date": "2024-06-19",
     "expiry_date": "2024-06-21",
     "days_left": 1,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 2,
@@ -162,7 +176,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 3,
@@ -173,7 +188,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 6,
@@ -184,7 +200,8 @@
     "received_date": "2024-06-17",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 9,
@@ -195,7 +212,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 13,
@@ -206,7 +224,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 14,
@@ -217,7 +236,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 16,
@@ -228,7 +248,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 17,
@@ -239,7 +260,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 18,
@@ -250,7 +272,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 19,
@@ -261,7 +284,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 20,
@@ -272,7 +296,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 22,
@@ -283,7 +308,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 23,
@@ -294,7 +320,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 28,
@@ -305,7 +332,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 33,
@@ -316,7 +344,8 @@
     "received_date": "2024-06-16",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 34,
@@ -327,7 +356,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 36,
@@ -338,7 +368,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 37,
@@ -349,7 +380,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 46,
@@ -360,7 +392,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 52,
@@ -371,7 +404,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 53,
@@ -382,7 +416,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 1,
@@ -393,7 +428,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-23",
     "days_left": 3,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 15,
@@ -404,7 +440,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-23",
     "days_left": 3,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 40,
@@ -415,7 +452,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-23",
     "days_left": 3,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 45,
@@ -426,7 +464,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-24",
     "days_left": 4,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 4,
@@ -437,7 +476,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-25",
     "days_left": 5,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 5,
@@ -448,7 +488,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-25",
     "days_left": 5,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 7,
@@ -459,7 +500,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-25",
     "days_left": 5,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 38,
@@ -470,7 +512,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-25",
     "days_left": 5,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 47,
@@ -481,7 +524,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-25",
     "days_left": 5,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 25,
@@ -492,7 +536,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-26",
     "days_left": 6,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 26,
@@ -503,7 +548,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-26",
     "days_left": 6,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 30,
@@ -514,7 +560,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-26",
     "days_left": 6,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 32,
@@ -525,7 +572,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-26",
     "days_left": 6,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 41,
@@ -536,7 +584,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-26",
     "days_left": 6,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 42,
@@ -547,7 +596,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-26",
     "days_left": 6,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 43,
@@ -558,7 +608,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-26",
     "days_left": 6,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 31,
@@ -569,7 +620,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-29",
     "days_left": 9,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 50,
@@ -580,7 +632,8 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-29",
     "days_left": 9,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   },
   {
     "id": 49,
@@ -591,6 +644,7 @@
     "received_date": "2024-06-20",
     "expiry_date": "2024-07-10",
     "days_left": 20,
-    "status": "active"
+    "status": "active",
+    "discount_pct": 0
   }
 ]
