@@ -56,7 +56,7 @@ def test_slow_batch_gets_a_discount_that_pays_off():
     assert (row.expected_waste_units, row.rm_at_risk) == (6.0, 42.0)
     # 20% off: 6 kg x 1.8 = 10.8 kg sold at RM5.60 = RM60.48, versus 6 kg at RM7 = RM42.
     assert (row.discount_pct, row.expected_rm_saved) == (20, 18.48)
-    assert row.explanation.startswith("12 kg Tomatoes expire in 2 days. About 6.0 kg is expected to sell")
+    assert row.explanation.startswith("12 kg Tomatoes expire in 2 days. About 6 kg is expected to sell")
 
 
 def test_no_discount_when_demand_does_not_respond():
@@ -103,4 +103,11 @@ def test_reads_the_ml_output_files():
     out = recommend(batches((7, 12, "2024-06-12")), forecasts(2), sku_params, elasticity, TODAY)
     row = out.iloc[0]
     assert row.action == "discount" and row.discount_pct in set(elasticity.discount_pct)
-    assert row.explanation.startswith("12 units Tomatoes expire in 2 days")
+    assert row.explanation.startswith("12 kg Tomatoes expire in 2 days")
+
+
+def test_explanations_round_quantities_and_use_the_catalog_unit():
+    skus = pd.DataFrame({"product_id": [41], "price": [7.0]})  # no name or unit, like ml/out/sku_params.csv
+    out = recommend(batches((7, 12.3456, "2024-06-12")), forecasts(2.0417), skus, NO_ELASTICITY, TODAY)
+    assert out.iloc[0].explanation.startswith(
+        "12.3 kg Tomatoes expire in 2 days. About 6.1 kg is expected to sell by then, so about 6.2 kg may go unsold")

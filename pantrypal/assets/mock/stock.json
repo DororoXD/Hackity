@@ -4,7 +4,7 @@
     "name": "White Bread",
     "category": "Bakery",
     "unit": "loaves",
-    "quantity": 15.8,
+    "quantity": 14.2,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -13,7 +13,7 @@
     "name": "Fresh Milk",
     "category": "Dairy",
     "unit": "packs",
-    "quantity": 331.4,
+    "quantity": 238.2,
     "active_batches": 2,
     "next_expiry": "2024-06-21"
   },
@@ -22,7 +22,7 @@
     "name": "Greek Yogurt",
     "category": "Dairy",
     "unit": "packs",
-    "quantity": 86.1,
+    "quantity": 51.9,
     "active_batches": 1,
     "next_expiry": "2024-06-30"
   },
@@ -31,7 +31,7 @@
     "name": "Eggs",
     "category": "Eggs",
     "unit": "trays",
-    "quantity": 305.1,
+    "quantity": 157.2,
     "active_batches": 1,
     "next_expiry": "2024-07-11"
   },
@@ -40,7 +40,7 @@
     "name": "Coriander",
     "category": "Fresh herbs",
     "unit": "bunches",
-    "quantity": 15.8,
+    "quantity": 14.4,
     "active_batches": 1,
     "next_expiry": "2024-06-24"
   },
@@ -49,7 +49,7 @@
     "name": "Bananas",
     "category": "Fruit",
     "unit": "kg",
-    "quantity": 32.0,
+    "quantity": 31.7,
     "active_batches": 1,
     "next_expiry": "2024-06-27"
   },
@@ -58,7 +58,7 @@
     "name": "Dragon Fruit",
     "category": "Fruit",
     "unit": "kg",
-    "quantity": 54.1,
+    "quantity": 27.0,
     "active_batches": 1,
     "next_expiry": "2024-06-27"
   },
@@ -67,7 +67,7 @@
     "name": "Guava",
     "category": "Fruit",
     "unit": "kg",
-    "quantity": 40.2,
+    "quantity": 27.7,
     "active_batches": 1,
     "next_expiry": "2024-06-27"
   },
@@ -76,7 +76,7 @@
     "name": "Honeydew",
     "category": "Fruit",
     "unit": "kg",
-    "quantity": 71.2,
+    "quantity": 48.7,
     "active_batches": 2,
     "next_expiry": "2024-06-22"
   },
@@ -85,7 +85,7 @@
     "name": "Mangoes",
     "category": "Fruit",
     "unit": "kg",
-    "quantity": 32.9,
+    "quantity": 23.700000000000003,
     "active_batches": 2,
     "next_expiry": "2024-06-21"
   },
@@ -94,7 +94,7 @@
     "name": "Papaya",
     "category": "Fruit",
     "unit": "kg",
-    "quantity": 43.7,
+    "quantity": 24.2,
     "active_batches": 1,
     "next_expiry": "2024-06-27"
   },
@@ -103,7 +103,7 @@
     "name": "Pineapple",
     "category": "Fruit",
     "unit": "kg",
-    "quantity": 55.0,
+    "quantity": 26.4,
     "active_batches": 2,
     "next_expiry": "2024-06-19"
   },
@@ -112,7 +112,7 @@
     "name": "Brinjal",
     "category": "Fruiting vegetables",
     "unit": "kg",
-    "quantity": 76.7,
+    "quantity": 72.9,
     "active_batches": 2,
     "next_expiry": "2024-06-22"
   },
@@ -121,7 +121,7 @@
     "name": "Cherry Tomatoes",
     "category": "Fruiting vegetables",
     "unit": "kg",
-    "quantity": 55.1,
+    "quantity": 39.4,
     "active_batches": 2,
     "next_expiry": "2024-06-20"
   },
@@ -130,7 +130,7 @@
     "name": "Cucumber",
     "category": "Fruiting vegetables",
     "unit": "kg",
-    "quantity": 92.7,
+    "quantity": 76.30000000000001,
     "active_batches": 2,
     "next_expiry": "2024-06-20"
   },
@@ -139,7 +139,7 @@
     "name": "Japanese Cucumber",
     "category": "Fruiting vegetables",
     "unit": "kg",
-    "quantity": 74.8,
+    "quantity": 51.1,
     "active_batches": 1,
     "next_expiry": "2024-06-26"
   },
@@ -148,7 +148,7 @@
     "name": "Tomatoes",
     "category": "Fruiting vegetables",
     "unit": "kg",
-    "quantity": 98.0,
+    "quantity": 63.599999999999994,
     "active_batches": 2,
     "next_expiry": "2024-06-20"
   },
@@ -157,7 +157,7 @@
     "name": "Bok Choy",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 125.0,
+    "quantity": 94.2,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -166,7 +166,7 @@
     "name": "Choy Sum",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 25.5,
+    "quantity": 20.1,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -175,7 +175,7 @@
     "name": "Kai Lan",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 473.40000000000003,
+    "quantity": 362.6,
     "active_batches": 2,
     "next_expiry": "2024-06-22"
   },
@@ -184,7 +184,7 @@
     "name": "Kangkung",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 22.5,
+    "quantity": 8.9,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -193,7 +193,7 @@
     "name": "Lettuce",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 21.0,
+    "quantity": 15.8,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -202,7 +202,7 @@
     "name": "Napa Cabbage",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 23.6,
+    "quantity": 24.0,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -211,7 +211,7 @@
     "name": "Romaine Lettuce",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 105.8,
+    "quantity": 103.7,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -220,7 +220,7 @@
     "name": "Sawi",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 137.4,
+    "quantity": 68.4,
     "active_batches": 2,
     "next_expiry": "2024-06-22"
   },
@@ -229,7 +229,7 @@
     "name": "Spinach",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 28.8,
+    "quantity": 18.5,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -238,7 +238,7 @@
     "name": "Watercress",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 50.7,
+    "quantity": 32.8,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -247,7 +247,7 @@
     "name": "Beef Cubes",
     "category": "Meat & poultry",
     "unit": "kg",
-    "quantity": 101.0,
+    "quantity": 91.19999999999999,
     "active_batches": 2,
     "next_expiry": "2024-06-20"
   },
@@ -256,7 +256,7 @@
     "name": "Beef Slices",
     "category": "Meat & poultry",
     "unit": "kg",
-    "quantity": 34.6,
+    "quantity": 22.8,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -265,7 +265,7 @@
     "name": "Chicken Breast",
     "category": "Meat & poultry",
     "unit": "kg",
-    "quantity": 268.2,
+    "quantity": 229.20000000000002,
     "active_batches": 2,
     "next_expiry": "2024-06-20"
   },
@@ -274,7 +274,7 @@
     "name": "Chicken Thigh",
     "category": "Meat & poultry",
     "unit": "kg",
-    "quantity": 59.1,
+    "quantity": 61.900000000000006,
     "active_batches": 2,
     "next_expiry": "2024-06-22"
   },
@@ -283,7 +283,7 @@
     "name": "Chicken Wings",
     "category": "Meat & poultry",
     "unit": "kg",
-    "quantity": 111.3,
+    "quantity": 76.7,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -292,7 +292,7 @@
     "name": "Lamb Chops",
     "category": "Meat & poultry",
     "unit": "kg",
-    "quantity": 33.3,
+    "quantity": 26.8,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -301,7 +301,7 @@
     "name": "Minced Beef",
     "category": "Meat & poultry",
     "unit": "kg",
-    "quantity": 66.8,
+    "quantity": 61.3,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -310,7 +310,7 @@
     "name": "Whole Chicken",
     "category": "Meat & poultry",
     "unit": "kg",
-    "quantity": 50.5,
+    "quantity": 36.9,
     "active_batches": 1,
     "next_expiry": "2024-06-23"
   },
@@ -319,7 +319,7 @@
     "name": "Button Mushrooms",
     "category": "Mushrooms",
     "unit": "kg",
-    "quantity": 27.1,
+    "quantity": 13.9,
     "active_batches": 1,
     "next_expiry": "2024-06-25"
   },
@@ -328,7 +328,7 @@
     "name": "Ikan Kembung",
     "category": "Seafood",
     "unit": "kg",
-    "quantity": 13.1,
+    "quantity": 9.9,
     "active_batches": 1,
     "next_expiry": "2024-06-22"
   },
@@ -337,7 +337,7 @@
     "name": "Prawns",
     "category": "Seafood",
     "unit": "kg",
-    "quantity": 13.2,
+    "quantity": 9.9,
     "active_batches": 2,
     "next_expiry": "2024-06-19"
   },
@@ -346,7 +346,7 @@
     "name": "Firm Tofu",
     "category": "Tofu & soy",
     "unit": "packs",
-    "quantity": 46.5,
+    "quantity": 25.4,
     "active_batches": 1,
     "next_expiry": "2024-06-24"
   },
@@ -355,7 +355,7 @@
     "name": "Fresh Soy Milk",
     "category": "Tofu & soy",
     "unit": "packs",
-    "quantity": 49.8,
+    "quantity": 32.0,
     "active_batches": 1,
     "next_expiry": "2024-06-24"
   }

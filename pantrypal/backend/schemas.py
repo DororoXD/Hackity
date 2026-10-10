@@ -133,4 +133,5 @@ class AlertsResponse(BaseModel):
     due_soon: int  # alerts for batches expiring in the next few days (the engine looks 2 days ahead)
     total_rm_at_risk: float
     total_expected_rm_saved: float
+    monitoring: int  # at-risk batches with no action worth taking yet, left out of `alerts` by default
     alerts: list[Alert]  # most urgent first

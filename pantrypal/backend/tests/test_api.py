@@ -44,7 +44,20 @@ def test_sales_only_come_from_batches_on_the_shelf_that_day(client):
 def test_sales_import_rejects_missing_columns(client):
     response = client.post("/sales/import", files={"file": ("pos.csv", "date,qty\n2026-10-04,3\n")})
     assert response.status_code == 400
-    assert response.json()["detail"] == "Column not found: product, quantity. The file has: date, qty"
+    assert response.json()["detail"] == 'Column not found: "product", "quantity". The file has: "date", "qty"'
+
+
+def test_sales_import_ignores_spaces_and_capitals_in_headers(client):
+    # The Flutter team's test file: every line indented by three spaces, Windows line endings.
+    indented = ("   date,product,quantity\r\n   2026-10-09,Fresh Milk 1L,14\r\n"
+                "   2026-10-09,Strawbery 250g,6\r\n   2026-10-32,Greek Yogurt 500g,9\r\n")
+    result = client.post("/sales/import", params={"dry_run": True}, files={"file": ("t.csv", indented)}).json()
+    assert [r["status"] for r in result["rows"]] == ["unmatched", "unmatched", "bad_date"]
+
+    shouty = "Date , PRODUCT,Quantity\n2026-10-09,fresh milk,14\n"
+    result = client.post("/sales/import", params={"dry_run": True, "date_column": "date "},
+                         files={"file": ("t.csv", shouty)}).json()
+    assert (result["ok"], result["rows"][0]["name"]) == (1, "Fresh Milk")
 
 
 def test_sales_import_matches_names_and_reads_pos_formats(client):
@@ -152,3 +165,16 @@ def test_today_follows_the_demo_date(client, monkeypatch):
     monkeypatch.setenv("PANTRYPAL_TODAY", "2024-06-20")
     assert client.get("/today").json() == {"today": "2024-06-20"}
     assert client.get("/alerts").json()["today"] == "2024-06-20"
+
+
+def test_alerts_hide_monitor_unless_asked(client):
+    # 12 kg of Tomatoes expiring tomorrow with no sales, so a discount can't help yet: a "monitor" alert.
+    client.post("/batches", json={"product_id": TOMATOES, "quantity": 12, "received_date": "2026-10-06"})
+    client.post("/batches", json={"product_id": 140, "quantity": 3, "received_date": "2026-10-01"})  # expired
+
+    shown = client.get("/alerts", params={"today": "2026-10-11"}).json()
+    assert [a["action"] for a in shown["alerts"]] == ["remove"]
+    assert (shown["monitoring"], shown["total_rm_at_risk"]) == (1, shown["alerts"][0]["rm_at_risk"])
+
+    everything = client.get("/alerts", params={"today": "2026-10-11", "include_monitor": True}).json()
+    assert sorted(a["action"] for a in everything["alerts"]) == ["monitor", "remove"]

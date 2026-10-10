@@ -29,10 +29,13 @@ Use dates and `days_left` from the API rather than the phone's clock: the demo r
 Optional `?today=YYYY-MM-DD` to look at another day. Returns the summary tiles and the alert list:
 
 ```json
-{"today": "2024-06-20", "expired_or_today": 5, "due_soon": 5,
- "total_rm_at_risk": 2484.0, "total_expected_rm_saved": 68.04, "alerts": [ ... ]}
+{"today": "2024-06-20", "expired_or_today": 6, "due_soon": 2, "total_rm_at_risk": 1571.66,
+ "total_expected_rm_saved": 67.73, "monitoring": 3, "alerts": [ ... ]}
 ```
 
+- Only alerts with something to do (`discount`, `donate`, `remove`) are listed and counted in the tiles.
+  `monitoring` says how many at-risk batches are being watched with nothing to do yet; add
+  `?include_monitor=true` to list them too.
 - `expired_or_today` is the "Expired / Today" tile and `due_soon` the next tile. The engine looks
   **2 days** ahead, so label that tile "Next 2 days".
 - `total_rm_at_risk` is the "Value at risk" tile.
@@ -63,7 +66,7 @@ Returns every row with its `status`, plus the counts `ok`, `unmatched`, `errors`
 
 | Field | Values |
 |---|---|
-| Alert `action` | `discount` (apply `discount_pct`), `donate` (last day, a discount won't sell it), `remove` (expired), `monitor` (at risk, but no discount pays off yet) |
+| Alert `action` | `discount` (apply `discount_pct`), `donate` (last day, a discount won't sell it), `remove` (expired); `monitor` (at risk, nothing worth doing yet) only with `include_monitor=true` |
 | Alert `issue_type` | `expired`, `expiring_soon` |
 | Alert `priority` | `high` (expired, or expires today or tomorrow), `medium` (later) |
 | Alert `discount_pct` | `0`, `10`, `20` or `30` |

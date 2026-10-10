@@ -56,14 +56,18 @@ async def import_sales(file: UploadFile, date_column: str = "date", product_colu
 
     The product column can hold product names (any case) or product IDs. Dates can be YYYY-MM-DD or
     DD/MM/YYYY. Name the columns with the *_column parameters when the file's headers differ (the app's
-    Map step), and use dry_run=true to preview without saving. Saved sales come out of stock,
-    soonest-expiring batch first.
+    Map step); spaces and capitals in column names don't matter. Use dry_run=true to preview without
+    saving. Saved sales come out of stock, soonest-expiring batch first.
     """
     reader = csv.DictReader(io.StringIO((await file.read()).decode("utf-8-sig")))
-    headers = reader.fieldnames or []
-    missing = [c for c in (date_column, product_column, quantity_column) if c not in headers]
+    reader.fieldnames = [h.strip() for h in reader.fieldnames or []]
+    headers = {h.lower(): h for h in reader.fieldnames}
+    missing = [c for c in (date_column, product_column, quantity_column) if c.strip().lower() not in headers]
     if missing:
-        raise HTTPException(400, f"Column not found: {', '.join(missing)}. The file has: {', '.join(headers)}")
+        quoted = lambda names: ", ".join(f'"{n}"' for n in names)
+        raise HTTPException(400, f"Column not found: {quoted(missing)}. The file has: {quoted(reader.fieldnames)}")
+    date_column, product_column, quantity_column = (
+        headers[c.strip().lower()] for c in (date_column, product_column, quantity_column))
 
     products = session.exec(select(Product)).all()
     lookup = {p.name.lower(): p for p in products} | {str(p.product_id): p for p in products}
