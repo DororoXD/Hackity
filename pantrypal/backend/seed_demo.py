@@ -3,13 +3,16 @@
 Run from this folder:
     python seed_demo.py                         # demo date 2024-06-20
     python seed_demo.py --date 2024-05-15 --reset
+    python seed_demo.py --pos-export            # only rewrite data/sample_pos_export.csv
 
 Quantities follow the ML forecast for each product, so the alerts on the demo date are realistic.
 Start the server on the same date so it agrees (PowerShell): $env:PANTRYPAL_TODAY = "2024-06-20"
 """
 import argparse
+import csv
 from datetime import date, timedelta
 from itertools import islice
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -23,6 +26,7 @@ DEFAULT_DATE = date(2024, 6, 20)
 HISTORY_DAYS = 7
 SEED = 42
 ROLES = {"expired": 2, "slow": 8, "on_track": 4}  # how many products get each kind of older batch
+POS_EXPORT = Path(__file__).resolve().parent.parent / "data" / "sample_pos_export.csv"
 
 
 def daily_demand(day: date) -> dict:
@@ -74,11 +78,34 @@ def seed(session: Session, day: date, random_seed: int = SEED) -> tuple[int, int
     return batches, sales
 
 
+def write_pos_export(day: date, path: Path = POS_EXPORT) -> int:
+    """Write `day`'s sales as a POS export for /sales/import, plus two bad rows to show the validation.
+    Returns the number of rows written."""
+    demand = daily_demand(day)
+    if not demand:
+        raise SystemExit(f"No ML forecast for {day}. Pick a date inside ml/out/forecasts.csv.")
+    names = pd.read_csv(database.CATALOG_CSV).set_index("product_id")["name"]
+    stamp = f"{day:%d/%m/%Y}"
+    rows = sorted((stamp, names[product_id], round(quantity, 1)) for product_id, quantity in demand.items())
+    rows += [(stamp, "Strawberries 250g", 6), (f"32/{day:%m/%Y}", "Greek Yogurt", 9)]
+    with open(path, "w", newline="") as f:
+        writer = csv.writer(f, lineterminator="\n")
+        writer.writerow(["date", "product", "quantity"])
+        writer.writerows(rows)
+    return len(rows)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--date", type=date.fromisoformat, default=DEFAULT_DATE, help="demo date, YYYY-MM-DD")
     parser.add_argument("--reset", action="store_true", help="replace the stock and sales already in the database")
+    parser.add_argument("--pos-export", action="store_true",
+                        help=f"only write {POS_EXPORT.name} with the sales of --date, and leave the database alone")
     args = parser.parse_args()
+
+    if args.pos_export:
+        print(f"Wrote {write_pos_export(args.date)} rows to {POS_EXPORT}")
+        return
 
     init_db()
     with Session(database.engine) as session:

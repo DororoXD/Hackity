@@ -24,6 +24,13 @@ class Action(str, Enum):
     monitor = "monitor"
 
 
+class RowStatus(str, Enum):
+    ok = "ok"
+    unmatched = "unmatched"  # product not in the catalog
+    bad_date = "bad_date"
+    bad_quantity = "bad_quantity"
+
+
 class Priority(str, Enum):
     high = "high"
     medium = "medium"
@@ -72,14 +79,22 @@ class StockItem(BaseModel):
     next_expiry: Optional[date]
 
 
-class RowError(BaseModel):
+class ImportRow(BaseModel):
     row: int  # line number in the CSV, header is line 1
-    error: str
+    sale_date: Optional[date]
+    product: str  # as written in the file
+    product_id: Optional[int]  # the catalog product it matched
+    name: Optional[str]
+    quantity: Optional[float]
+    status: RowStatus
 
 
 class SalesImportResult(BaseModel):
-    rows_imported: int
-    rows_rejected: list[RowError]
+    rows: list[ImportRow]
+    ok: int
+    unmatched: int
+    errors: int  # bad dates or quantities
+    imported: int  # rows saved; 0 on a dry run
 
 
 class Alert(BaseModel):

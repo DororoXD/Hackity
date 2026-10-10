@@ -31,3 +31,12 @@ def test_seed_replaces_existing_stock(client):
 def test_seed_needs_a_date_the_forecasts_cover(client):
     with Session(database.engine) as session, pytest.raises(SystemExit, match="No ML forecast"):
         seed(session, date(2023, 1, 1))
+
+
+def test_pos_export_imports_with_two_bad_rows(client, tmp_path):
+    from seed_demo import write_pos_export
+
+    path = tmp_path / "pos.csv"
+    rows = write_pos_export(DEMO_DATE, path)
+    result = client.post("/sales/import", params={"dry_run": True}, files={"file": ("pos.csv", path.read_text())}).json()
+    assert (result["ok"], result["unmatched"], result["errors"]) == (rows - 2, 1, 1)
