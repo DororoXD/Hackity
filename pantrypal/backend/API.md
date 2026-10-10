@@ -45,7 +45,8 @@ Optional `?today=YYYY-MM-DD` to look at another day. Returns the summary tiles a
 
 ### `POST /batches`
 Body: `{"product_id": 41, "quantity": 12}`, plus optional `received_date` (defaults to today) and
-`expiry_date` (defaults to received date + the product's `shelf_life_days`). Returns the new batch.
+`expiry_date`, the last day it can be sold (defaults to received date + `shelf_life_days` − 1, so a
+3-day product received Monday can be sold until Wednesday). Returns the new batch.
 Pick `product_id` from `GET /products`, which has each product's `name`, `unit` and `shelf_life_days`.
 Supplier, cost, notes and storage location are not stored yet.
 

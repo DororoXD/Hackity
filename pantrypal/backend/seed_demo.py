@@ -65,15 +65,16 @@ def seed(session: Session, day: date, random_seed: int = SEED) -> tuple[int, int
         per_day, shelf = demand.get(product.product_id, 0), product.shelf_life_days
         stock = [(day, per_day * shelf * 0.7)]
         role = roles.get(product.product_id)
-        if role == "expired":
-            stock.append((day - timedelta(days=shelf + 1), per_day * rng.uniform(0.3, 0.8)))
+        if role == "expired":  # last sellable day was yesterday
+            stock.append((day - timedelta(days=shelf), per_day * rng.uniform(0.3, 0.8)))
         elif role in ("slow", "on_track"):
-            days_left = int(rng.integers(0, min(shelf, 3)))
+            days_left = int(rng.integers(0, min(shelf - 1, 3)))
             factor = rng.uniform(1.3, 2.0) if role == "slow" else rng.uniform(0.4, 0.7)
-            stock.append((day + timedelta(days=days_left - shelf), per_day * (days_left + 1) * factor))
+            stock.append((day + timedelta(days=days_left - shelf + 1), per_day * (days_left + 1) * factor))
         for received, quantity in stock:
+            # The day a batch arrives is day 1 of its shelf life, as in the ML backtest.
             session.add(Batch(product_id=product.product_id, quantity=max(round(quantity, 1), 1.0),
-                              received_date=received, expiry_date=received + timedelta(days=shelf)))
+                              received_date=received, expiry_date=received + timedelta(days=shelf - 1)))
             batches += 1
     session.commit()
     return batches, sales

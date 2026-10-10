@@ -38,7 +38,8 @@ def create_batch(body: BatchCreate, session: Session = Depends(get_session)):
     received = body.received_date or clock.today()
     batch = Batch(
         product_id=product.product_id, quantity=body.quantity, received_date=received,
-        expiry_date=body.expiry_date or received + timedelta(days=product.shelf_life_days),
+        # Last sellable day: the day it arrives counts as day 1 of its shelf life, as in the ML backtest.
+        expiry_date=body.expiry_date or received + timedelta(days=product.shelf_life_days - 1),
     )
     session.add(batch)
     session.commit()

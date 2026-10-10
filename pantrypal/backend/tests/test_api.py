@@ -13,7 +13,7 @@ def test_products_loaded_from_catalog(client):
 def test_new_batch_expires_after_shelf_life(client):
     batch = client.post("/batches", json={"product_id": TOMATOES, "quantity": 12,
                                           "received_date": "2026-10-01"}).json()
-    assert batch["expiry_date"] == "2026-10-07"
+    assert batch["expiry_date"] == "2026-10-06"  # 6 days counting the day it arrives, as in the ML backtest
     assert client.post("/batches", json={"product_id": 99999, "quantity": 1}).status_code == 404
 
 
@@ -143,7 +143,7 @@ def test_ml_forecasts_are_read_for_this_store():
 def test_demo_date_setting(client, monkeypatch):
     monkeypatch.setenv("PANTRYPAL_TODAY", "2024-06-10")
     batch = client.post("/batches", json={"product_id": TOMATOES, "quantity": 3}).json()
-    assert (batch["received_date"], batch["expiry_date"], batch["days_left"]) == ("2024-06-10", "2024-06-16", 6)
+    assert (batch["received_date"], batch["expiry_date"], batch["days_left"]) == ("2024-06-10", "2024-06-15", 5)
 
 
 def test_import_history_lists_real_imports_newest_first(client, monkeypatch):
@@ -169,7 +169,7 @@ def test_today_follows_the_demo_date(client, monkeypatch):
 
 def test_alerts_hide_monitor_unless_asked(client):
     # 12 kg of Tomatoes expiring tomorrow with no sales, so a discount can't help yet: a "monitor" alert.
-    client.post("/batches", json={"product_id": TOMATOES, "quantity": 12, "received_date": "2026-10-06"})
+    client.post("/batches", json={"product_id": TOMATOES, "quantity": 12, "received_date": "2026-10-07"})
     client.post("/batches", json={"product_id": 140, "quantity": 3, "received_date": "2026-10-01"})  # expired
 
     shown = client.get("/alerts", params={"today": "2026-10-11"}).json()

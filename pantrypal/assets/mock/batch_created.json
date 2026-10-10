@@ -5,7 +5,7 @@
   "unit": "kg",
   "quantity": 12.0,
   "received_date": "2024-06-20",
-  "expiry_date": "2024-06-26",
-  "days_left": 6,
+  "expiry_date": "2024-06-25",
+  "days_left": 5,
   "status": "active"
 }

@@ -49,7 +49,7 @@ class BatchCreate(BaseModel):
     product_id: int
     quantity: float = Field(gt=0)
     received_date: Optional[date] = None  # defaults to today
-    expiry_date: Optional[date] = None  # defaults to received_date + the product's shelf life
+    expiry_date: Optional[date] = None  # last sellable day; defaults to received_date + shelf life - 1
 
 
 class BatchUpdate(BaseModel):

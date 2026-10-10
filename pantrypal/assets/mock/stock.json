@@ -6,7 +6,7 @@
     "unit": "loaves",
     "quantity": 14.2,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 834,
@@ -24,7 +24,7 @@
     "unit": "packs",
     "quantity": 51.9,
     "active_batches": 1,
-    "next_expiry": "2024-06-30"
+    "next_expiry": "2024-06-29"
   },
   {
     "product_id": 783,
@@ -33,7 +33,7 @@
     "unit": "trays",
     "quantity": 157.2,
     "active_batches": 1,
-    "next_expiry": "2024-07-11"
+    "next_expiry": "2024-07-10"
   },
   {
     "product_id": 115,
@@ -42,7 +42,7 @@
     "unit": "bunches",
     "quantity": 14.4,
     "active_batches": 1,
-    "next_expiry": "2024-06-24"
+    "next_expiry": "2024-06-23"
   },
   {
     "product_id": 250,
@@ -51,7 +51,7 @@
     "unit": "kg",
     "quantity": 31.7,
     "active_batches": 1,
-    "next_expiry": "2024-06-27"
+    "next_expiry": "2024-06-26"
   },
   {
     "product_id": 634,
@@ -60,7 +60,7 @@
     "unit": "kg",
     "quantity": 27.0,
     "active_batches": 1,
-    "next_expiry": "2024-06-27"
+    "next_expiry": "2024-06-26"
   },
   {
     "product_id": 345,
@@ -69,7 +69,7 @@
     "unit": "kg",
     "quantity": 27.7,
     "active_batches": 1,
-    "next_expiry": "2024-06-27"
+    "next_expiry": "2024-06-26"
   },
   {
     "product_id": 422,
@@ -96,7 +96,7 @@
     "unit": "kg",
     "quantity": 24.2,
     "active_batches": 1,
-    "next_expiry": "2024-06-27"
+    "next_expiry": "2024-06-26"
   },
   {
     "product_id": 638,
@@ -141,7 +141,7 @@
     "unit": "kg",
     "quantity": 51.1,
     "active_batches": 1,
-    "next_expiry": "2024-06-26"
+    "next_expiry": "2024-06-25"
   },
   {
     "product_id": 41,
@@ -159,7 +159,7 @@
     "unit": "kg",
     "quantity": 94.2,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 21,
@@ -168,16 +168,16 @@
     "unit": "kg",
     "quantity": 20.1,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 215,
     "name": "Kai Lan",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 362.6,
+    "quantity": 273.3,
     "active_batches": 2,
-    "next_expiry": "2024-06-22"
+    "next_expiry": "2024-06-21"
   },
   {
     "product_id": 500,
@@ -186,7 +186,7 @@
     "unit": "kg",
     "quantity": 8.9,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 843,
@@ -195,7 +195,7 @@
     "unit": "kg",
     "quantity": 15.8,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 118,
@@ -204,7 +204,7 @@
     "unit": "kg",
     "quantity": 24.0,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 117,
@@ -213,16 +213,16 @@
     "unit": "kg",
     "quantity": 103.7,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 136,
     "name": "Sawi",
     "category": "Leafy greens",
     "unit": "kg",
-    "quantity": 68.4,
+    "quantity": 51.9,
     "active_batches": 2,
-    "next_expiry": "2024-06-22"
+    "next_expiry": "2024-06-21"
   },
   {
     "product_id": 140,
@@ -231,7 +231,7 @@
     "unit": "kg",
     "quantity": 18.5,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 554,
@@ -240,7 +240,7 @@
     "unit": "kg",
     "quantity": 32.8,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 486,
@@ -258,7 +258,7 @@
     "unit": "kg",
     "quantity": 22.8,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 300,
@@ -274,9 +274,9 @@
     "name": "Chicken Thigh",
     "category": "Meat & poultry",
     "unit": "kg",
-    "quantity": 61.900000000000006,
+    "quantity": 46.900000000000006,
     "active_batches": 2,
-    "next_expiry": "2024-06-22"
+    "next_expiry": "2024-06-21"
   },
   {
     "product_id": 104,
@@ -285,7 +285,7 @@
     "unit": "kg",
     "quantity": 76.7,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 127,
@@ -294,7 +294,7 @@
     "unit": "kg",
     "quantity": 26.8,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 122,
@@ -303,7 +303,7 @@
     "unit": "kg",
     "quantity": 61.3,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 6,
@@ -312,7 +312,7 @@
     "unit": "kg",
     "quantity": 36.9,
     "active_batches": 1,
-    "next_expiry": "2024-06-23"
+    "next_expiry": "2024-06-22"
   },
   {
     "product_id": 644,
@@ -321,7 +321,7 @@
     "unit": "kg",
     "quantity": 13.9,
     "active_batches": 1,
-    "next_expiry": "2024-06-25"
+    "next_expiry": "2024-06-24"
   },
   {
     "product_id": 93,
@@ -330,7 +330,7 @@
     "unit": "kg",
     "quantity": 9.9,
     "active_batches": 1,
-    "next_expiry": "2024-06-22"
+    "next_expiry": "2024-06-21"
   },
   {
     "product_id": 74,
@@ -348,7 +348,7 @@
     "unit": "packs",
     "quantity": 25.4,
     "active_batches": 1,
-    "next_expiry": "2024-06-24"
+    "next_expiry": "2024-06-23"
   },
   {
     "product_id": 596,
@@ -357,6 +357,6 @@
     "unit": "packs",
     "quantity": 32.0,
     "active_batches": 1,
-    "next_expiry": "2024-06-24"
+    "next_expiry": "2024-06-23"
   }
 ]

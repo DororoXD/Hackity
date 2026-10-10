@@ -5,7 +5,7 @@
     "name": "Prawns",
     "unit": "kg",
     "quantity": 2.1,
-    "received_date": "2024-06-17",
+    "received_date": "2024-06-18",
     "expiry_date": "2024-06-19",
     "days_left": -1,
     "status": "active"
@@ -16,7 +16,7 @@
     "name": "Pineapple",
     "unit": "kg",
     "quantity": 2.5,
-    "received_date": "2024-06-12",
+    "received_date": "2024-06-13",
     "expiry_date": "2024-06-19",
     "days_left": -1,
     "status": "active"
@@ -27,7 +27,7 @@
     "name": "Tomatoes",
     "unit": "kg",
     "quantity": 15.3,
-    "received_date": "2024-06-14",
+    "received_date": "2024-06-15",
     "expiry_date": "2024-06-20",
     "days_left": 0,
     "status": "active"
@@ -38,7 +38,7 @@
     "name": "Chicken Breast",
     "unit": "kg",
     "quantity": 46.9,
-    "received_date": "2024-06-17",
+    "received_date": "2024-06-18",
     "expiry_date": "2024-06-20",
     "days_left": 0,
     "status": "active"
@@ -49,7 +49,7 @@
     "name": "Beef Cubes",
     "unit": "kg",
     "quantity": 39.9,
-    "received_date": "2024-06-17",
+    "received_date": "2024-06-18",
     "expiry_date": "2024-06-20",
     "days_left": 0,
     "status": "active"
@@ -60,7 +60,7 @@
     "name": "Cucumber",
     "unit": "kg",
     "quantity": 22.6,
-    "received_date": "2024-06-14",
+    "received_date": "2024-06-15",
     "expiry_date": "2024-06-20",
     "days_left": 0,
     "status": "active"
@@ -71,9 +71,53 @@
     "name": "Cherry Tomatoes",
     "unit": "kg",
     "quantity": 5.3,
-    "received_date": "2024-06-14",
+    "received_date": "2024-06-15",
     "expiry_date": "2024-06-20",
     "days_left": 0,
+    "status": "active"
+  },
+  {
+    "id": 10,
+    "product_id": 74,
+    "name": "Prawns",
+    "unit": "kg",
+    "quantity": 7.8,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-21",
+    "days_left": 1,
+    "status": "active"
+  },
+  {
+    "id": 12,
+    "product_id": 93,
+    "name": "Ikan Kembung",
+    "unit": "kg",
+    "quantity": 9.9,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-21",
+    "days_left": 1,
+    "status": "active"
+  },
+  {
+    "id": 21,
+    "product_id": 136,
+    "name": "Sawi",
+    "unit": "kg",
+    "quantity": 32.9,
+    "received_date": "2024-06-19",
+    "expiry_date": "2024-06-21",
+    "days_left": 1,
+    "status": "active"
+  },
+  {
+    "id": 24,
+    "product_id": 215,
+    "name": "Kai Lan",
+    "unit": "kg",
+    "quantity": 178.5,
+    "received_date": "2024-06-19",
+    "expiry_date": "2024-06-21",
+    "days_left": 1,
     "status": "active"
   },
   {
@@ -82,7 +126,7 @@
     "name": "Mangoes",
     "unit": "kg",
     "quantity": 4.1,
-    "received_date": "2024-06-14",
+    "received_date": "2024-06-15",
     "expiry_date": "2024-06-21",
     "days_left": 1,
     "status": "active"
@@ -93,9 +137,42 @@
     "name": "Fresh Milk",
     "unit": "packs",
     "quantity": 72.1,
-    "received_date": "2024-06-11",
+    "received_date": "2024-06-12",
     "expiry_date": "2024-06-21",
     "days_left": 1,
+    "status": "active"
+  },
+  {
+    "id": 54,
+    "product_id": 847,
+    "name": "Chicken Thigh",
+    "unit": "kg",
+    "quantity": 30.1,
+    "received_date": "2024-06-19",
+    "expiry_date": "2024-06-21",
+    "days_left": 1,
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "product_id": 6,
+    "name": "Whole Chicken",
+    "unit": "kg",
+    "quantity": 36.9,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "product_id": 21,
+    "name": "Choy Sum",
+    "unit": "kg",
+    "quantity": 20.1,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
     "status": "active"
   },
   {
@@ -104,51 +181,128 @@
     "name": "Brinjal",
     "unit": "kg",
     "quantity": 39.2,
-    "received_date": "2024-06-16",
+    "received_date": "2024-06-17",
     "expiry_date": "2024-06-22",
     "days_left": 2,
     "status": "active"
   },
   {
-    "id": 10,
-    "product_id": 74,
-    "name": "Prawns",
+    "id": 9,
+    "product_id": 70,
+    "name": "Bok Choy",
     "unit": "kg",
-    "quantity": 7.8,
+    "quantity": 94.2,
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
     "status": "active"
   },
   {
-    "id": 12,
-    "product_id": 93,
-    "name": "Ikan Kembung",
+    "id": 13,
+    "product_id": 104,
+    "name": "Chicken Wings",
     "unit": "kg",
-    "quantity": 9.9,
+    "quantity": 76.7,
     "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
     "status": "active"
   },
   {
-    "id": 21,
+    "id": 14,
+    "product_id": 108,
+    "name": "White Bread",
+    "unit": "loaves",
+    "quantity": 14.2,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
+    "status": "active"
+  },
+  {
+    "id": 16,
+    "product_id": 117,
+    "name": "Romaine Lettuce",
+    "unit": "kg",
+    "quantity": 103.7,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
+    "status": "active"
+  },
+  {
+    "id": 17,
+    "product_id": 118,
+    "name": "Napa Cabbage",
+    "unit": "kg",
+    "quantity": 24.0,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
+    "status": "active"
+  },
+  {
+    "id": 18,
+    "product_id": 122,
+    "name": "Minced Beef",
+    "unit": "kg",
+    "quantity": 61.3,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
+    "status": "active"
+  },
+  {
+    "id": 19,
+    "product_id": 127,
+    "name": "Lamb Chops",
+    "unit": "kg",
+    "quantity": 26.8,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
+    "status": "active"
+  },
+  {
+    "id": 20,
     "product_id": 136,
     "name": "Sawi",
     "unit": "kg",
-    "quantity": 49.4,
-    "received_date": "2024-06-19",
+    "quantity": 19.0,
+    "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
     "status": "active"
   },
   {
-    "id": 24,
+    "id": 22,
+    "product_id": 140,
+    "name": "Spinach",
+    "unit": "kg",
+    "quantity": 18.5,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
+    "status": "active"
+  },
+  {
+    "id": 23,
     "product_id": 215,
     "name": "Kai Lan",
     "unit": "kg",
-    "quantity": 267.8,
-    "received_date": "2024-06-19",
+    "quantity": 94.8,
+    "received_date": "2024-06-20",
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
+    "status": "active"
+  },
+  {
+    "id": 28,
+    "product_id": 300,
+    "name": "Chicken Breast",
+    "unit": "kg",
+    "quantity": 182.3,
+    "received_date": "2024-06-20",
     "expiry_date": "2024-06-22",
     "days_left": 2,
     "status": "active"
@@ -159,163 +313,9 @@
     "name": "Honeydew",
     "unit": "kg",
     "quantity": 10.3,
-    "received_date": "2024-06-15",
+    "received_date": "2024-06-16",
     "expiry_date": "2024-06-22",
     "days_left": 2,
-    "status": "active"
-  },
-  {
-    "id": 54,
-    "product_id": 847,
-    "name": "Chicken Thigh",
-    "unit": "kg",
-    "quantity": 45.1,
-    "received_date": "2024-06-19",
-    "expiry_date": "2024-06-22",
-    "days_left": 2,
-    "status": "active"
-  },
-  {
-    "id": 2,
-    "product_id": 6,
-    "name": "Whole Chicken",
-    "unit": "kg",
-    "quantity": 36.9,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 3,
-    "product_id": 21,
-    "name": "Choy Sum",
-    "unit": "kg",
-    "quantity": 20.1,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 9,
-    "product_id": 70,
-    "name": "Bok Choy",
-    "unit": "kg",
-    "quantity": 94.2,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 13,
-    "product_id": 104,
-    "name": "Chicken Wings",
-    "unit": "kg",
-    "quantity": 76.7,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 14,
-    "product_id": 108,
-    "name": "White Bread",
-    "unit": "loaves",
-    "quantity": 14.2,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 16,
-    "product_id": 117,
-    "name": "Romaine Lettuce",
-    "unit": "kg",
-    "quantity": 103.7,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 17,
-    "product_id": 118,
-    "name": "Napa Cabbage",
-    "unit": "kg",
-    "quantity": 24.0,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 18,
-    "product_id": 122,
-    "name": "Minced Beef",
-    "unit": "kg",
-    "quantity": 61.3,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 19,
-    "product_id": 127,
-    "name": "Lamb Chops",
-    "unit": "kg",
-    "quantity": 26.8,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 20,
-    "product_id": 136,
-    "name": "Sawi",
-    "unit": "kg",
-    "quantity": 19.0,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 22,
-    "product_id": 140,
-    "name": "Spinach",
-    "unit": "kg",
-    "quantity": 18.5,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 23,
-    "product_id": 215,
-    "name": "Kai Lan",
-    "unit": "kg",
-    "quantity": 94.8,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
-    "status": "active"
-  },
-  {
-    "id": 28,
-    "product_id": 300,
-    "name": "Chicken Breast",
-    "unit": "kg",
-    "quantity": 182.3,
-    "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
     "status": "active"
   },
   {
@@ -325,8 +325,8 @@
     "unit": "kg",
     "quantity": 51.3,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
     "status": "active"
   },
   {
@@ -336,8 +336,8 @@
     "unit": "kg",
     "quantity": 8.9,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
     "status": "active"
   },
   {
@@ -347,8 +347,8 @@
     "unit": "kg",
     "quantity": 32.8,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
     "status": "active"
   },
   {
@@ -358,8 +358,8 @@
     "unit": "kg",
     "quantity": 22.8,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
     "status": "active"
   },
   {
@@ -369,8 +369,8 @@
     "unit": "kg",
     "quantity": 15.8,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
     "status": "active"
   },
   {
@@ -380,8 +380,8 @@
     "unit": "kg",
     "quantity": 16.8,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-23",
-    "days_left": 3,
+    "expiry_date": "2024-06-22",
+    "days_left": 2,
     "status": "active"
   },
   {
@@ -391,8 +391,8 @@
     "unit": "packs",
     "quantity": 25.4,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-24",
-    "days_left": 4,
+    "expiry_date": "2024-06-23",
+    "days_left": 3,
     "status": "active"
   },
   {
@@ -402,8 +402,8 @@
     "unit": "bunches",
     "quantity": 14.4,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-24",
-    "days_left": 4,
+    "expiry_date": "2024-06-23",
+    "days_left": 3,
     "status": "active"
   },
   {
@@ -413,8 +413,8 @@
     "unit": "packs",
     "quantity": 32.0,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-24",
-    "days_left": 4,
+    "expiry_date": "2024-06-23",
+    "days_left": 3,
     "status": "active"
   },
   {
@@ -424,8 +424,8 @@
     "unit": "kg",
     "quantity": 13.9,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-25",
-    "days_left": 5,
+    "expiry_date": "2024-06-24",
+    "days_left": 4,
     "status": "active"
   },
   {
@@ -435,8 +435,8 @@
     "unit": "kg",
     "quantity": 51.1,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-26",
-    "days_left": 6,
+    "expiry_date": "2024-06-25",
+    "days_left": 5,
     "status": "active"
   },
   {
@@ -446,8 +446,8 @@
     "unit": "kg",
     "quantity": 33.7,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-26",
-    "days_left": 6,
+    "expiry_date": "2024-06-25",
+    "days_left": 5,
     "status": "active"
   },
   {
@@ -457,8 +457,8 @@
     "unit": "kg",
     "quantity": 48.3,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-26",
-    "days_left": 6,
+    "expiry_date": "2024-06-25",
+    "days_left": 5,
     "status": "active"
   },
   {
@@ -468,8 +468,8 @@
     "unit": "kg",
     "quantity": 53.7,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-26",
-    "days_left": 6,
+    "expiry_date": "2024-06-25",
+    "days_left": 5,
     "status": "active"
   },
   {
@@ -479,8 +479,8 @@
     "unit": "kg",
     "quantity": 34.1,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-26",
-    "days_left": 6,
+    "expiry_date": "2024-06-25",
+    "days_left": 5,
     "status": "active"
   },
   {
@@ -490,8 +490,8 @@
     "unit": "kg",
     "quantity": 31.7,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-27",
-    "days_left": 7,
+    "expiry_date": "2024-06-26",
+    "days_left": 6,
     "status": "active"
   },
   {
@@ -501,8 +501,8 @@
     "unit": "kg",
     "quantity": 19.6,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-27",
-    "days_left": 7,
+    "expiry_date": "2024-06-26",
+    "days_left": 6,
     "status": "active"
   },
   {
@@ -512,8 +512,8 @@
     "unit": "kg",
     "quantity": 27.7,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-27",
-    "days_left": 7,
+    "expiry_date": "2024-06-26",
+    "days_left": 6,
     "status": "active"
   },
   {
@@ -523,8 +523,8 @@
     "unit": "kg",
     "quantity": 38.4,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-27",
-    "days_left": 7,
+    "expiry_date": "2024-06-26",
+    "days_left": 6,
     "status": "active"
   },
   {
@@ -534,8 +534,8 @@
     "unit": "kg",
     "quantity": 27.0,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-27",
-    "days_left": 7,
+    "expiry_date": "2024-06-26",
+    "days_left": 6,
     "status": "active"
   },
   {
@@ -545,8 +545,8 @@
     "unit": "kg",
     "quantity": 24.2,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-27",
-    "days_left": 7,
+    "expiry_date": "2024-06-26",
+    "days_left": 6,
     "status": "active"
   },
   {
@@ -556,8 +556,8 @@
     "unit": "kg",
     "quantity": 23.9,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-27",
-    "days_left": 7,
+    "expiry_date": "2024-06-26",
+    "days_left": 6,
     "status": "active"
   },
   {
@@ -567,8 +567,8 @@
     "unit": "packs",
     "quantity": 51.9,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-30",
-    "days_left": 10,
+    "expiry_date": "2024-06-29",
+    "days_left": 9,
     "status": "active"
   },
   {
@@ -578,8 +578,8 @@
     "unit": "packs",
     "quantity": 166.1,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-06-30",
-    "days_left": 10,
+    "expiry_date": "2024-06-29",
+    "days_left": 9,
     "status": "active"
   },
   {
@@ -589,8 +589,8 @@
     "unit": "trays",
     "quantity": 157.2,
     "received_date": "2024-06-20",
-    "expiry_date": "2024-07-11",
-    "days_left": 21,
+    "expiry_date": "2024-07-10",
+    "days_left": 20,
     "status": "active"
   }
 ]
