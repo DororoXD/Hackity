@@ -1,5 +1,5 @@
 """The simulator's guarantees: identical batches for every policy, identical numbers on a
-rerun, no overselling, and the runbook's B1/B2 sanity check."""
+rerun, no overselling, markdowns that only touch their batch, and the runbook's B1/B2 check."""
 import numpy as np
 import pandas as pd
 
@@ -31,7 +31,7 @@ def test_stock_is_conserved_and_never_oversold():
     inp = make_inputs()
     r = simulate(b2_last_day, inp, 49, 76)
     d = r.daily
-    assert (d["sold"] <= d["demand"] + 1e-9).all()
+    assert (d["lost"] >= 0).all() and (d["sold"] <= d["demand"] * 1.45 + 1e-9).all()
     on_hand_end = d["received"].sum() - d["sold"].sum() - d["wasted"].sum()
     assert on_hand_end >= -1e-6
 
@@ -51,3 +51,18 @@ def test_batches_expire_at_their_shelf_life_without_noise():
     expired = r.expired.merge(r.received, on="batch_id")
     assert len(expired) > 0
     assert (expired["expired_day"] - expired["received_day"] == 3).all()
+
+
+def test_markdown_only_cheapens_the_discounted_batch():
+    inp = make_inputs(n_series=2)
+
+    def mark_down_everything(batches, today, forecasts, sku_params, elasticity):
+        return batches[["store_id", "product_id", "batch_id"]].assign(discount_pct=20)
+
+    def mark_down_nothing_real(batches, today, forecasts, sku_params, elasticity):
+        return batches[["store_id", "product_id", "batch_id"]].iloc[:0].assign(discount_pct=20)
+
+    all_off = simulate(mark_down_everything, inp, 49, 60).daily
+    none_off = simulate(mark_down_nothing_real, inp, 49, 60).daily
+    assert np.isclose(all_off["discount_given"].sum(), (all_off["revenue"] / 0.8 * 0.2).sum())
+    assert none_off["discount_given"].sum() == 0

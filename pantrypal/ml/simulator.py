@@ -9,9 +9,14 @@ One simulated day:
 1. Expire every batch whose age has reached its noisy shelf life; its units are waste.
 2. Every 2nd day, deliver k x (mean demand of the last 14 days) x 2 days as one batch.
 3. Show the policy the batches (with their printed expiry date) and yesterday's forecasts,
-   never the true demand. It returns one discount per store-SKU.
-4. Demand = corrected demand x the sales multiplier for that discount.
-5. Sell oldest stock first; unmet demand is lost.
+   never the true demand. It returns a discount per batch, like a markdown sticker.
+4. Sell oldest stock first. A batch at d% off sells up to (demand still unmet) x the sales
+   multiplier for d%, and each unit it sells uses up 1/multiplier of that demand, so the
+   lift is extra demand and the rest goes on to the full-price batches behind it.
+5. Unmet demand is lost.
+
+Discounts were per store-SKU until just before the freeze; they became per batch to match
+the engine and how shops mark stock down, before any engine results on real data were seen.
 
 Run:  python simulator.py   (B1-B3 on the validation window, plus the runbook's checks)
 """
@@ -85,13 +90,15 @@ def random_draws(inp, settings):
     return np.exp(mu + settings.k_sigma * z_k), np.exp(settings.life_sigma * z_life)
 
 
-def sales_multiplier(inp, discount_pct, lift_scale=1.0):
-    """Per-series sales multiplier for a discount, interpolated from elasticity.csv (0% off = x1)."""
+def sales_multiplier(inp, series_idx, discount_pct, lift_scale=1.0):
+    """Sales multiplier for each (series, discount) pair, interpolated from elasticity.csv (0% off = x1)."""
     table = inp.elasticity.pivot_table(index="first_category_id", columns="discount_pct", values="sales_multiplier")
     depths = np.concatenate([[0.0], table.columns.to_numpy(dtype=float)])
     curves = np.column_stack([np.ones(len(table)), table.to_numpy()])
-    rows = table.index.get_indexer(inp.series["first_category_id"])
-    mult = np.array([np.interp(d, depths, curves[r]) for d, r in zip(discount_pct, rows)])
+    rows = table.index.get_indexer(inp.series["first_category_id"].to_numpy()[series_idx])
+    mult = np.ones(len(discount_pct))
+    for i in np.flatnonzero(np.asarray(discount_pct) > 0):
+        mult[i] = np.interp(discount_pct[i], depths, curves[rows[i]])
     return 1 + (mult - 1) * lift_scale
 
 
@@ -143,27 +150,41 @@ def simulate(policy, inp, start, end, forecasts=None, settings=Settings()):
             "expiry_date": (received_date + pd.to_timedelta(batches["shelf_life_days"] - 1, unit="D")).to_numpy(),
         })
         act = policy(view, today, by_origin.get(day - 1, no_forecast), s, inp.elasticity)
-        discount = np.zeros(n)
+        batch_discount = np.zeros(len(batches))
         if len(act):
             actions.append(act.assign(day=day))
-            best = act.groupby(KEYS)["discount_pct"].max()  # one discount per SKU: the deepest asked for
-            discount = best.reindex(pd.MultiIndex.from_frame(s[KEYS])).fillna(0).to_numpy()
+            asked = act.groupby("batch_id")["discount_pct"].max()  # the deepest discount asked for
+            batch_discount = asked.reindex(batches["batch_id"]).fillna(0).to_numpy(dtype=float)
 
-        # 4-5. demand, then sell oldest first
-        want = inp.demand[:, day] * sales_multiplier(inp, discount, settings.lift_scale)
-        batches = batches.sort_values(["series", "received_day"], kind="stable")
-        ahead = (batches.groupby("series")["quantity"].cumsum() - batches["quantity"]).to_numpy()
-        stock = batches["quantity"].to_numpy()
-        sold_b = np.clip(want[batches["series"].to_numpy()] - ahead, 0, stock)
-        sold = np.bincount(batches["series"], sold_b, minlength=n)
+        # 4-5. sell oldest first; a discounted batch sells to the unmet demand x its multiplier
+        order = np.lexsort((batches["received_day"].to_numpy(), batches["series"].to_numpy()))
+        batches, batch_discount = batches.iloc[order].reset_index(drop=True), batch_discount[order]
+        b_series = batches["series"].to_numpy()
+        stock = batches["quantity"].to_numpy(dtype=float)
+        mult = sales_multiplier(inp, b_series, batch_discount, settings.lift_scale)
+        rank = batches.groupby("series").cumcount().to_numpy()
+        unmet = inp.demand[:, day].astype(float)
+        sold_b = np.zeros(len(batches))
+        for r in range(rank.max() + 1 if len(rank) else 0):
+            at = np.flatnonzero(rank == r)  # at most one batch per series at each rank
+            sold_b[at] = np.minimum(stock[at], unmet[b_series[at]] * mult[at])
+            unmet[b_series[at]] -= sold_b[at] / mult[at]
+        unmet = np.clip(unmet, 0, None)
+
+        sold = np.bincount(b_series, sold_b, minlength=n)
+        b_price = price[b_series]
+        revenue = np.bincount(b_series, sold_b * b_price * (1 - batch_discount / 100), minlength=n)
+        given = np.bincount(b_series, sold_b * b_price * batch_discount / 100, minlength=n)
+        discounted = np.bincount(b_series, sold_b * (batch_discount > 0), minlength=n)
+        deepest = np.zeros(n)
+        np.maximum.at(deepest, b_series, batch_discount)
         batches = batches.assign(quantity=stock - sold_b)
         batches = batches[batches["quantity"] > 1e-9]
 
         daily.append(pd.DataFrame({
-            "series": np.arange(n), "day": day, "received": got, "demand": want, "sold": sold,
-            "wasted": wasted, "discount_pct": discount,
-            "revenue": sold * price * (1 - discount / 100),
-            "discount_given": sold * price * discount / 100,
+            "series": np.arange(n), "day": day, "received": got, "demand": inp.demand[:, day],
+            "sold": sold, "lost": unmet, "wasted": wasted, "discount_pct": deepest,
+            "discounted_units": discounted, "revenue": revenue, "discount_given": given,
         }))
 
     return Result(pd.concat(daily, ignore_index=True), pd.concat(received, ignore_index=True),
@@ -188,7 +209,8 @@ def summarize(res, inp, days, role=None):
         "discount_given_rm": d["discount_given"].sum(),
         "revenue_rm": revenue,
         "profit_rm": revenue - ((d["sold"] + d["wasted"]) * d["cost"]).sum(),
-        "lost_sales_units": (d["demand"] - d["sold"]).sum(),
+        "discounted_units": d["discounted_units"].sum(),
+        "lost_sales_units": d["lost"].sum(),
     }
 
 
