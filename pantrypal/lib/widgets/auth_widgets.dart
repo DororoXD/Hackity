@@ -24,15 +24,20 @@ class AuthScaffold extends StatelessWidget {
               bottom: false,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 18),
-                child: Center(
-                  child: Text(
-                    'PantryPal',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.peach,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _AppLogo(),
+                    SizedBox(width: 10),
+                    Text(
+                      'PantryPal',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.peach,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -76,6 +81,30 @@ class AuthScaffold extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The PantryPal logo shown next to the app name.
+/// Put your logo at assets/images/logo.png. If the file is missing,
+/// a simple icon is shown instead so the app never crashes.
+class _AppLogo extends StatelessWidget {
+  const _AppLogo();
+
+  static const double size = 38;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(
+      'assets/images/logo.png',
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) => const Icon(
+        Icons.shopping_basket_outlined,
+        size: size,
+        color: AppColors.peach,
       ),
     );
   }
@@ -205,4 +234,4 @@ class AuthLink extends StatelessWidget {
       ],
     );
   }
-}
+}\
