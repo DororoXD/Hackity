@@ -25,8 +25,10 @@ class ApiService {
     return AlertsResponse.fromJson(_decode(res));
   }
 
-  /// PATCH /batches/{id}  with status: sold_out | discarded
-  static Future<void> updateBatch(int batchId, String status) async {
+  /// PATCH /batches/{id}  with status: sold_out | discarded | donated,
+  /// and/or discountPct: 0 to 90 (0 takes the markdown off)
+  static Future<void> updateBatch(int batchId,
+      {String? status, int? discountPct}) async {
     if (ApiConfig.useMock) {
       await Future.delayed(const Duration(milliseconds: 300));
       return;
@@ -34,7 +36,10 @@ class ApiService {
     final res = await _send(() => http.patch(
           Uri.parse('${ApiConfig.baseUrl}/batches/$batchId'),
           headers: {'Content-Type': 'application/json'},
-          body: json.encode({'status': status}),
+          body: json.encode({
+            if (status != null) 'status': status,
+            if (discountPct != null) 'discount_pct': discountPct,
+          }),
         ));
     _decode(res);
   }

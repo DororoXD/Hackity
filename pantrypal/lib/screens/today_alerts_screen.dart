@@ -217,11 +217,21 @@ class _AlertTile extends StatelessWidget {
       showAppSnack(context, 'Partial updates are not saved yet');
       return;
     }
+    await _patch(context, status: status);
+  }
+
+  // Sends PATCH /batches/{id}, then reloads the alerts so this one drops off.
+  // Returns false (after showing the error) if the save failed.
+  Future<bool> _patch(BuildContext context,
+      {String? status, int? discountPct}) async {
     try {
-      await ApiService.updateBatch(alert.batchId, status);
+      await ApiService.updateBatch(alert.batchId,
+          status: status, discountPct: discountPct);
       onChanged();
+      return true;
     } catch (e) {
       if (context.mounted) showAppSnack(context, e.toString());
+      return false;
     }
   }
 
@@ -249,8 +259,14 @@ class _AlertTile extends StatelessWidget {
     switch (alert.action) {
       case 'discount':
         return [
-          CardAction('Discount ${alert.discountPct}%',
-              filled: true, onTap: () => discountFlow(context, name)),
+          CardAction('Discount ${alert.discountPct}%', filled: true,
+              onTap: () async {
+            final pct =
+                await discountFlow(context, name, initial: alert.discountPct);
+            if (pct != null && context.mounted) {
+              await _patch(context, discountPct: pct);
+            }
+          }),
           markUsed,
         ];
       case 'remove':
@@ -264,9 +280,12 @@ class _AlertTile extends StatelessWidget {
         ];
       case 'donate':
         return [
-          CardAction('Donate',
-              filled: true,
-              onTap: () => showAppSnack(context, 'Donation noted for $name')),
+          CardAction('Donate', filled: true, onTap: () async {
+            final ok = await _patch(context, status: 'donated');
+            if (ok && context.mounted) {
+              showAppSnack(context, 'Donation noted for $name');
+            }
+          }),
           CardAction('Discard', onTap: () async {
             final q = await discardFlow(context, name, _units);
             if (context.mounted) await _save(context, q, 'discarded');

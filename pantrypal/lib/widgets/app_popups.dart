@@ -562,8 +562,10 @@ class _TextInputBodyState extends State<_TextInputBody> {
   }
 }
 
-Future<int?> discountSheet(BuildContext context, {required String product}) {
-  var pct = 20;
+Future<int?> discountSheet(BuildContext context,
+    {required String product, int initial = 20}) {
+  var pct = initial;
+  final options = {10, 20, 30, 50, if (initial > 0) initial}.toList()..sort();
   return showAppSheet<int>(
     context,
     title: 'Apply discount',
@@ -577,7 +579,7 @@ Future<int?> discountSheet(BuildContext context, {required String product}) {
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (final p in const [10, 20, 30, 50])
+              for (final p in options)
                 PillChoice(
                   label: '$p%',
                   selected: pct == p,
@@ -857,11 +859,14 @@ Future<void> showTemplateSheet(BuildContext context) async {
 // (replace the snackbar with a provider / API call later)
 // =====================================================================
 
-Future<void> discountFlow(BuildContext context, String product) async {
-  final pct = await discountSheet(context, product: product);
+/// Returns the discount picked, or null if cancelled.
+Future<int?> discountFlow(BuildContext context, String product,
+    {int initial = 20}) async {
+  final pct = await discountSheet(context, product: product, initial: initial);
   if (pct != null && context.mounted) {
     showAppSnack(context, '$pct% discount applied to $product');
   }
+  return pct;
 }
 
 /// Returns the quantity marked as used, or null if cancelled.
