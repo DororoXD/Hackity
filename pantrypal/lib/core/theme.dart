@@ -7,6 +7,7 @@ class AppColors {
   static const cream = Color(0xFFFCE8DA);
   static const red = Color(0xFFE8605C);
   static const orange = Color(0xFFEE8A57);
+  static const navActive = Color(0xFFFD9157); // add this line
 }
 
 ThemeData buildTheme() {

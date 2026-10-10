@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
+import 'batches_screen.dart';
 import 'today_alerts_screen.dart';
 
 class HomeShell extends StatefulWidget {
@@ -15,7 +16,7 @@ class _HomeShellState extends State<HomeShell> {
   // Replace the placeholders as you build each screen.
   final _pages = const [
     TodayAlertsScreen(),
-    Center(child: Text('Stock')),
+    BatchesScreen(),
     Center(child: Text('Add Stock')),
     Center(child: Text('Sales Import')),
     Center(child: Text('Settings')),
@@ -36,7 +37,7 @@ class _HomeShellState extends State<HomeShell> {
             children: [
               _NavItem(Icons.notifications_none, 'Alerts', 0, _index, _go),
               _NavItem(Icons.inventory_2_outlined, 'Stock', 1, _index, _go),
-              _AddButton(onTap: () => _go(2)),
+              _AddButton(active: _index == 2, onTap: () => _go(2)),
               _NavItem(Icons.show_chart, 'Sales', 3, _index, _go),
               _NavItem(Icons.settings_outlined, 'Settings', 4, _index, _go),
             ],
@@ -61,7 +62,7 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final active = index == current;
-    final color = active ? AppColors.peach : AppColors.cream;
+    final color = active ? AppColors.navActive : AppColors.cream;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => onTap(index),
@@ -79,11 +80,13 @@ class _NavItem extends StatelessWidget {
 }
 
 class _AddButton extends StatelessWidget {
+  final bool active;
   final VoidCallback onTap;
-  const _AddButton({required this.onTap});
+  const _AddButton({required this.active, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    final color = active ? AppColors.navActive : AppColors.cream;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -97,16 +100,14 @@ class _AddButton extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.brown,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.cream, width: 2),
+                border: Border.all(color: color, width: 2),
               ),
-              child: const Icon(Icons.add, size: 38, color: AppColors.cream),
+              child: Icon(Icons.add, size: 38, color: color),
             ),
           ),
-          const Text('Add',
+          Text('Add',
               style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.cream)),
+                  fontSize: 10, fontWeight: FontWeight.w600, color: color)),
         ],
       ),
     );
