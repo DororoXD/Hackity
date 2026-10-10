@@ -2,7 +2,9 @@
 class ApiConfig {
   /// true  = read the sample files in assets/mock/ (no server needed)
   /// false = call the real server at [baseUrl]
-  static bool useMock = false;
+  /// Off by default; build with --dart-define=USE_MOCK=true for a phone
+  /// install or demo link that has no server to talk to.
+  static bool useMock = const bool.fromEnvironment('USE_MOCK');
 
   /// Windows / web on the same laptop: http://localhost:8000
   /// Android emulator:  http://10.0.2.2:8000
