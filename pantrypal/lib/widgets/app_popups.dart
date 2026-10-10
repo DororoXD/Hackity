@@ -864,7 +864,8 @@ Future<void> discountFlow(BuildContext context, String product) async {
   }
 }
 
-Future<void> markUsedFlow(
+/// Returns the quantity marked as used, or null if cancelled.
+Future<int?> markUsedFlow(
     BuildContext context, String product, int units) async {
   final qty = await quantityDialog(
     context,
@@ -877,9 +878,11 @@ Future<void> markUsedFlow(
   if (qty != null && context.mounted) {
     showAppSnack(context, '$qty units of $product marked as used');
   }
+  return qty;
 }
 
-Future<void> discardFlow(
+/// Returns the quantity discarded, or null if cancelled.
+Future<int?> discardFlow(
     BuildContext context, String product, int units) async {
   final r = await wasteSheet(
     context,
@@ -891,6 +894,7 @@ Future<void> discardFlow(
   if (r != null && context.mounted) {
     showAppSnack(context, 'Discarded ${r.qty} × $product (${r.reason})');
   }
+  return r?.qty;
 }
 
 Future<void> moveToColdFlow(BuildContext context, String product) async {
