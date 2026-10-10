@@ -4,7 +4,7 @@ import '../core/theme.dart';
 const _avatarPurple = Color(0xFF4B3A8C);
 
 /// Shared page layout for the Login and Sign Up screens:
-/// brown "PantryPal" bar, avatar, big title, then the form [children].
+/// Brown logo bar, avatar, big title, then the form [children].
 class AuthScaffold extends StatelessWidget {
   final String title;
   final List<Widget> children;
@@ -24,21 +24,7 @@ class AuthScaffold extends StatelessWidget {
               bottom: false,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 18),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _AppLogo(),
-                    SizedBox(width: 10),
-                    Text(
-                      'PantryPal',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.peach,
-                      ),
-                    ),
-                  ],
-                ),
+                child: Center(child: _AppLogo()),
               ),
             ),
           ),
@@ -86,7 +72,7 @@ class AuthScaffold extends StatelessWidget {
   }
 }
 
-/// The PantryPal logo shown next to the app name.
+/// The PantryPal logo shown in the auth header.
 /// Put your logo at assets/images/logo.png. If the file is missing,
 /// a simple icon is shown instead so the app never crashes.
 class _AppLogo extends StatelessWidget {
@@ -98,8 +84,8 @@ class _AppLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       'assets/images/logo.png',
-      width: size,
-      height: size,
+      width: 100,
+      height: 100,
       fit: BoxFit.contain,
       errorBuilder: (_, __, ___) => const Icon(
         Icons.shopping_basket_outlined,
@@ -234,4 +220,4 @@ class AuthLink extends StatelessWidget {
       ],
     );
   }
-}\
+}
