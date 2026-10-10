@@ -26,15 +26,42 @@ class _SalesImportScreenState extends State<SalesImportScreen> {
   List<int>? _bytes;
   ImportResult? _result;
 
-  // Imports done in this session. A saved history needs a backend endpoint.
+  // Import history from GET /sales/imports (plus imports made this session).
   final List<(String, String)> _history = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHistory();
+  }
+
+  Future<void> _loadHistory() async {
+    try {
+      final items = await ApiService.fetchImportHistory();
+      if (!mounted || items.isEmpty) return;
+      setState(() {
+        _history
+          ..clear()
+          ..addAll([
+            for (final i in items)
+              (
+                i.filename,
+                '${i.rowsImported} imported · ${i.rowsRejected} rejected'
+                    '${i.when == null ? '' : ' · ${formatShortDate(i.when)}'}',
+              ),
+          ]);
+      });
+    } catch (_) {
+      // History is optional; the rest of the screen still works.
+    }
+  }
 
   Future<void> _pickFile() async {
     if (_busy) return;
     try {
       final files = await FilePicker.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['csv', 'xlsx'],
+        allowedExtensions: ['csv'],
       );
       if (files == null || files.isEmpty) return; // the user cancelled
 
@@ -107,6 +134,7 @@ class _SalesImportScreenState extends State<SalesImportScreen> {
         _history.insert(0, (name, '${done.imported} rows imported'));
       });
       showAppSnack(context, '${done.imported} rows imported');
+      _loadHistory();
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -300,7 +328,7 @@ class _UploadZone extends StatelessWidget {
             Text(
               busy
                   ? 'Checking file…'
-                  : (fileName ?? 'Drop a CSV or Excel file here'),
+                  : (fileName ?? 'Drop a CSV file here'),
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14, color: AppColors.brown),
             ),

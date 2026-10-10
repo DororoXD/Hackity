@@ -25,6 +25,20 @@ class ApiService {
     return AlertsResponse.fromJson(_decode(res));
   }
 
+  /// PATCH /batches/{id}  with status: sold_out | discarded
+  static Future<void> updateBatch(int batchId, String status) async {
+    if (ApiConfig.useMock) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return;
+    }
+    final res = await _send(() => http.patch(
+          Uri.parse('${ApiConfig.baseUrl}/batches/$batchId'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({'status': status}),
+        ));
+    _decode(res);
+  }
+
   /// POST /sales/import?dry_run=true|false  (CSV or Excel file upload)
   ///
   /// dryRun = true  -> only checks the file (the Preview step)
@@ -48,6 +62,35 @@ class ApiService {
       return http.Response.fromStream(await request.send());
     });
     return ImportResult.fromJson(_decode(res));
+  }
+
+  /// GET /sales/imports
+  static Future<List<ImportHistoryItem>> fetchImportHistory() async {
+    if (ApiConfig.useMock) return const [];
+    final res = await _send(
+      () => http.get(Uri.parse('${ApiConfig.baseUrl}/sales/imports')),
+    );
+    if (res.statusCode != 200) {
+      _decode(res);
+    }
+    dynamic body;
+    try {
+      body = json.decode(utf8.decode(res.bodyBytes));
+    } catch (_) {
+      throw const ApiException('The server sent a response the app could not read.');
+    }
+    // Accept either a plain list or {"imports": [...]}.
+    final Object? raw =
+        body is List ? body : (body is Map ? (body['imports'] ?? body['items']) : null);
+    final items = <ImportHistoryItem>[];
+    if (raw is List) {
+      for (final e in raw) {
+        if (e is Map) {
+          items.add(ImportHistoryItem.fromJson(Map<String, dynamic>.from(e)));
+        }
+      }
+    }
+    return items;
   }
 
   // Runs a request and turns any network problem into a readable message.

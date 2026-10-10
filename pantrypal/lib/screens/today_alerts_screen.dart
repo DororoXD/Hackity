@@ -78,7 +78,7 @@ class _TodayAlertsScreenState extends State<TodayAlertsScreen> {
               return RefreshIndicator(
                 color: AppColors.brown,
                 onRefresh: _refresh,
-                child: _AlertsBody(data: snap.data!),
+                child: _AlertsBody(data: snap.data!, onChanged: _reload),
               );
             },
           ),
@@ -90,7 +90,8 @@ class _TodayAlertsScreenState extends State<TodayAlertsScreen> {
 
 class _AlertsBody extends StatelessWidget {
   final AlertsResponse data;
-  const _AlertsBody({required this.data});
+  final VoidCallback onChanged;
+  const _AlertsBody({required this.data, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +147,7 @@ class _AlertsBody extends StatelessWidget {
                   const SizedBox(width: 8),
                   StatTile(
                     value: '${data.dueSoon}',
-                    label: 'Next 3 days',
+                    label: 'Next 2 days',
                     valueColor: AppColors.orange,
                   ),
                   const SizedBox(width: 8),
@@ -196,7 +197,7 @@ class _AlertsBody extends StatelessWidget {
         ),
       ),
       for (final a in items) ...[
-        _AlertTile(alert: a),
+        _AlertTile(alert: a, onChanged: onChanged),
         const SizedBox(height: 10),
       ],
       const SizedBox(height: 6),
@@ -206,7 +207,23 @@ class _AlertsBody extends StatelessWidget {
 
 class _AlertTile extends StatelessWidget {
   final AlertItem alert;
-  const _AlertTile({required this.alert});
+  final VoidCallback onChanged;
+  const _AlertTile({required this.alert, required this.onChanged});
+
+  // Saves the change to the backend when the whole batch is used or discarded.
+  Future<void> _save(BuildContext context, int? qty, String status) async {
+    if (qty == null) return;
+    if (qty < _units) {
+      showAppSnack(context, 'Partial updates are not saved yet');
+      return;
+    }
+    try {
+      await ApiService.updateBatch(alert.batchId, status);
+      onChanged();
+    } catch (e) {
+      if (context.mounted) showAppSnack(context, e.toString());
+    }
+  }
 
   String get _qty => '${formatQty(alert.quantity)} ${alert.unit}';
   String get _risk => '${(alert.risk * 100).round()}% risk';
@@ -224,7 +241,10 @@ class _AlertTile extends StatelessWidget {
   List<CardAction> _actions(BuildContext context) {
     final name = alert.name;
     final markUsed =
-        CardAction('Mark Used', onTap: () => markUsedFlow(context, name, _units));
+        CardAction('Mark Used', onTap: () async {
+      final q = await markUsedFlow(context, name, _units);
+      if (context.mounted) await _save(context, q, 'sold_out');
+    });
 
     switch (alert.action) {
       case 'discount':
@@ -236,14 +256,21 @@ class _AlertTile extends StatelessWidget {
       case 'remove':
         return [
           CardAction('Discard',
-              filled: true, onTap: () => discardFlow(context, name, _units)),
+              filled: true,
+              onTap: () async {
+                final q = await discardFlow(context, name, _units);
+                if (context.mounted) await _save(context, q, 'discarded');
+              }),
         ];
       case 'donate':
         return [
           CardAction('Donate',
               filled: true,
               onTap: () => showAppSnack(context, 'Donation noted for $name')),
-          CardAction('Discard', onTap: () => discardFlow(context, name, _units)),
+          CardAction('Discard', onTap: () async {
+            final q = await discardFlow(context, name, _units);
+            if (context.mounted) await _save(context, q, 'discarded');
+          }),
         ];
       case 'monitor':
         return [
