@@ -1,0 +1,41 @@
+product_id,first_category_id,second_category_id,third_category_id,name,category,shelf_life_days,unit
+41,4,53,77,Tomatoes,Fruiting vegetables,6,kg
+108,8,29,113,White Bread,Bakery,3,loaves
+250,16,27,97,Bananas,Fruit,7,kg
+6,20,50,170,Whole Chicken,Meat & poultry,3,kg
+74,21,61,16,Prawns,Seafood,2,kg
+783,22,81,56,Eggs,Eggs,21,trays
+834,28,72,154,Fresh Milk,Dairy,10,packs
+4,29,78,82,Firm Tofu,Tofu & soy,4,packs
+140,4,28,10,Spinach,Leafy greens,3,kg
+345,16,26,96,Guava,Fruit,7,kg
+122,20,68,127,Minced Beef,Meat & poultry,3,kg
+596,29,76,60,Fresh Soy Milk,Tofu & soy,4,packs
+500,4,28,179,Kangkung,Leafy greens,3,kg
+634,16,25,99,Dragon Fruit,Fruit,7,kg
+127,20,58,172,Lamb Chops,Meat & poultry,3,kg
+635,16,27,104,Papaya,Fruit,7,kg
+300,20,50,24,Chicken Breast,Meat & poultry,3,kg
+638,16,25,94,Pineapple,Fruit,7,kg
+769,20,68,176,Beef Slices,Meat & poultry,3,kg
+847,20,50,229,Chicken Thigh,Meat & poultry,3,kg
+843,4,28,167,Lettuce,Leafy greens,3,kg
+774,4,53,77,Cherry Tomatoes,Fruiting vegetables,6,kg
+70,4,28,81,Bok Choy,Leafy greens,3,kg
+21,4,28,81,Choy Sum,Leafy greens,3,kg
+411,28,72,218,Greek Yogurt,Dairy,10,packs
+422,16,25,101,Honeydew,Fruit,7,kg
+578,4,53,58,Cucumber,Fruiting vegetables,6,kg
+291,16,27,98,Mangoes,Fruit,7,kg
+486,20,68,63,Beef Cubes,Meat & poultry,3,kg
+215,4,28,149,Kai Lan,Leafy greens,3,kg
+118,4,28,180,Napa Cabbage,Leafy greens,3,kg
+644,23,10,17,Button Mushrooms,Mushrooms,5,kg
+104,20,50,2,Chicken Wings,Meat & poultry,3,kg
+93,21,61,223,Ikan Kembung,Seafood,2,kg
+26,4,53,156,Brinjal,Fruiting vegetables,6,kg
+23,4,53,58,Japanese Cucumber,Fruiting vegetables,6,kg
+554,4,28,168,Watercress,Leafy greens,3,kg
+115,10,33,181,Coriander,Fresh herbs,4,bunches
+117,4,28,1,Romaine Lettuce,Leafy greens,3,kg
+136,4,28,161,Sawi,Leafy greens,3,kg
