@@ -127,3 +127,18 @@ def test_demo_date_setting(client, monkeypatch):
     monkeypatch.setenv("PANTRYPAL_TODAY", "2024-06-10")
     batch = client.post("/batches", json={"product_id": TOMATOES, "quantity": 3}).json()
     assert (batch["received_date"], batch["expiry_date"], batch["days_left"]) == ("2024-06-10", "2024-06-16", 6)
+
+
+def test_import_history_lists_real_imports_newest_first(client, monkeypatch):
+    monkeypatch.setenv("PANTRYPAL_TODAY", "2024-06-20")
+    week = "date,product,quantity\n2024-06-19,Tomatoes,3\n2024-06-19,Strawberries,1\n"
+    client.post("/sales/import", params={"dry_run": True}, files={"file": ("week24.csv", week)})  # previews aren't recorded
+    client.post("/sales/import", files={"file": ("week24.csv", week)})
+    client.post("/sales/import", files={"file": ("week25.csv", "date,product,quantity\n2024-06-20,41,2\n")})
+
+    history = client.get("/sales/imports").json()
+    assert [(h["filename"], h["imported_on"], h["rows_imported"], h["rows_rejected"]) for h in history] == [
+        ("week25.csv", "2024-06-20", 1, 0),
+        ("week24.csv", "2024-06-20", 1, 1),
+    ]
+    assert len(client.get("/sales/imports", params={"limit": 1}).json()) == 1

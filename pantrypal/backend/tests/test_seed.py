@@ -21,11 +21,13 @@ def test_seed_builds_a_demo_store_with_alerts(client):
     assert any(a["issue_type"] == "expiring_soon" for a in alerts)
 
 
-def test_seed_replaces_existing_stock(client):
+def test_seed_replaces_existing_stock_and_import_history(client):
+    client.post("/sales/import", files={"file": ("pos.csv", "date,product,quantity\n2024-06-19,41,2\n")})
     with Session(database.engine) as session:
         seed(session, DEMO_DATE)
         batches, _ = seed(session, DEMO_DATE)
         assert len(session.exec(select(Batch)).all()) == batches
+    assert client.get("/sales/imports").json() == []
 
 
 def test_seed_needs_a_date_the_forecasts_cover(client):

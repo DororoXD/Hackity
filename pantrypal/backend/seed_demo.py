@@ -19,7 +19,7 @@ import pandas as pd
 from sqlmodel import Session, delete, select
 
 import database
-from database import Batch, Product, Sale, init_db
+from database import Batch, Product, Sale, SalesImport, init_db
 from services.alert_service import STORE_ID, ml_forecasts
 
 DEFAULT_DATE = date(2024, 6, 20)
@@ -37,10 +37,11 @@ def daily_demand(day: date) -> dict:
 
 
 def seed(session: Session, day: date, random_seed: int = SEED) -> tuple[int, int]:
-    """Replace all batches and sales with demo data as of `day`. Returns (batches, sales) added."""
+    """Replace all batches, sales and import history with demo data as of `day`. Returns (batches, sales) added."""
     demand = daily_demand(day)
     if not demand:
         raise SystemExit(f"No ML forecast for {day}. Pick a date inside ml/out/forecasts.csv.")
+    session.exec(delete(SalesImport))
     session.exec(delete(Sale))
     session.exec(delete(Batch))
     rng = np.random.default_rng(random_seed)

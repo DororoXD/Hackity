@@ -89,6 +89,14 @@ class ImportRow(BaseModel):
     status: RowStatus
 
 
+class ImportRecord(BaseModel):
+    id: int
+    filename: str
+    imported_on: date
+    rows_imported: int
+    rows_rejected: int  # unmatched products, bad dates and bad quantities
+
+
 class SalesImportResult(BaseModel):
     rows: list[ImportRow]
     ok: int
