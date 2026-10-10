@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/session.dart';
 import '../widgets/auth_widgets.dart';
 import 'home_shell.dart';
 import 'sign_up_screen.dart';
@@ -33,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     // TODO: check the username and password with your backend here.
+    Session.username.value = _username.text.trim();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const HomeShell()),
     );

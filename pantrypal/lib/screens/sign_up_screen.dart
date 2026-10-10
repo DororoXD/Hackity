@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/session.dart';
 import '../widgets/auth_widgets.dart';
 import 'home_shell.dart';
 import 'login_screen.dart';
@@ -52,6 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
     // TODO: create the account with your backend here.
+    Session.username.value = _username.text.trim();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const HomeShell()),
     );
