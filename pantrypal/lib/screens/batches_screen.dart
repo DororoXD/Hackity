@@ -371,7 +371,7 @@ class _DetailCard extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              _OutlineButton('Edit qty', onTap: () {}),
+              _OutlineButton('Edit quantity', onTap: () {}),
               const SizedBox(width: 8),
               _OutlineButton('Log waste', onTap: () {}),
             ],
