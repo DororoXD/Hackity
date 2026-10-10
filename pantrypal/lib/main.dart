@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'core/theme.dart';
-import 'screens/home_shell.dart';
+import 'screens/login_screen.dart';
 
-void main() => runApp(const PantryPal());
+void main() => runApp(const PantryPalApp());
 
-class PantryPal extends StatelessWidget {
-  const PantryPal({super.key});
+class PantryPalApp extends StatelessWidget {
+  const PantryPalApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class PantryPal extends StatelessWidget {
       title: 'PantryPal',
       debugShowCheckedModeBanner: false,
       theme: buildTheme(),
-      home: const HomeShell(),
+      home: const LoginScreen(),
     );
   }
 }

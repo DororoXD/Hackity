@@ -3,7 +3,7 @@ import '../core/theme.dart';
 import 'add_stock_screen.dart';  
 import 'batches_screen.dart';
 import 'sales_import_screen.dart';
-import 'settings_screen.dart'; 
+import 'settings_screen.dart';
 import 'today_alerts_screen.dart';
 
 class HomeShell extends StatefulWidget {
