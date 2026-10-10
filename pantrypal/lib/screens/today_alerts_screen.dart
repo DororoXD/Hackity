@@ -89,26 +89,50 @@ class TodayAlertsScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
+
+              // Section 1: Expires Today
               const _SectionTitle('Expires Today'),
               AlertCard(
                 title: 'Fresh Milk 1L',
                 details: 'Batch #B-2841     12 units     Fridge 2',
                 message: 'Printed expiry today. Predicted spoilage matches.',
                 daysLabel: '0 Days',
-                onDiscount: () {},
-                onMarkUsed: () {},
-                onDiscard: () {},
+                badgeColor: AppColors.red,
+                actions: [
+                  CardAction('Discount', filled: true, onTap: () {}),
+                  CardAction('Mark Used', onTap: () {}),
+                  CardAction('Discard', onTap: () {}),
+                ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+
+              // Section 2: Predicted to Spoil Easily
               const _SectionTitle('Predicted to Spoil Easily'),
               AlertCard(
-                title: 'Fresh Milk 1L',
-                details: 'Batch #B-2842     12 units     Fridge 2',
-                message: 'Printed expiry today. Predicted spoilage matches.',
-                daysLabel: '0 Days',
-                onDiscount: () {},
-                onMarkUsed: () {},
-                onDiscard: () {},
+                title: 'Strawberries 250g',
+                details: 'Batch #B-2038     20 units     Display',
+                message: 'Label says 5 days. Predicted 2 days '
+                    '(stored at 9°C, above the 4°C ideal)',
+                daysLabel: '2 Days',
+                badgeColor: AppColors.peach,
+                actions: [
+                  CardAction('Discount', filled: true, onTap: () {}),
+                  CardAction('Move to cold', onTap: () {}),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Section 3: 1-3 Days
+              const _SectionTitle('1-3 Days'),
+              AlertCard(
+                title: 'Chicken Breast 500g',
+                details: 'Batch #B-2036     8 units     Freezer-chill',
+                daysLabel: '3 Days',
+                badgeColor: AppColors.peach,
+                actions: [
+                  CardAction('Mark Used', filled: true, onTap: () {}),
+                  CardAction('Snooze', onTap: () {}),
+                ],
               ),
             ],
           ),

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'core/theme.dart';
 import 'screens/home_shell.dart';
 
-void main() => runApp(const FreshStockApp());
+void main() => runApp(const PantryPal());
 
-class FreshStockApp extends StatelessWidget {
-  const FreshStockApp({super.key});
+class PantryPal extends StatelessWidget {
+  const PantryPal({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FreshStock AI',
+      title: 'PantryPal',
       debugShowCheckedModeBanner: false,
       theme: buildTheme(),
       home: const HomeShell(),

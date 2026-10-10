@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
 
+class CardAction {
+  final String label;
+  final bool filled;
+  final VoidCallback? onTap;
+
+  const CardAction(this.label, {this.filled = false, this.onTap});
+}
+
 class AlertCard extends StatelessWidget {
   final String title;
   final String details;
-  final String message;
+  final String? message;
   final String daysLabel;
-  final VoidCallback? onDiscount;
-  final VoidCallback? onMarkUsed;
-  final VoidCallback? onDiscard;
+  final Color badgeColor;
+  final List<CardAction> actions;
 
   const AlertCard({
     super.key,
     required this.title,
     required this.details,
-    required this.message,
+    this.message,
     required this.daysLabel,
-    this.onDiscount,
-    this.onMarkUsed,
-    this.onDiscard,
+    this.badgeColor = AppColors.red,
+    required this.actions,
   });
 
   @override
@@ -48,7 +54,7 @@ class AlertCard extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppColors.red,
+                  color: badgeColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -65,17 +71,23 @@ class AlertCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(details,
               style: const TextStyle(fontSize: 11, color: AppColors.brown)),
-          const SizedBox(height: 2),
-          Text(message,
-              style: const TextStyle(fontSize: 11, color: AppColors.brown)),
+          if (message != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              message!,
+              style: TextStyle(
+                fontSize: 11,
+                color: AppColors.brown.withOpacity(0.6),
+              ),
+            ),
+          ],
           const SizedBox(height: 10),
           Row(
             children: [
-              _ActionButton('Discount', filled: true, onTap: onDiscount),
-              const SizedBox(width: 8),
-              _ActionButton('Mark Used', onTap: onMarkUsed),
-              const SizedBox(width: 8),
-              _ActionButton('Discard', onTap: onDiscard),
+              for (var i = 0; i < actions.length; i++) ...[
+                if (i > 0) const SizedBox(width: 8),
+                _ActionButton(actions[i]),
+              ],
             ],
           ),
         ],
@@ -85,31 +97,28 @@ class AlertCard extends StatelessWidget {
 }
 
 class _ActionButton extends StatelessWidget {
-  final String label;
-  final bool filled;
-  final VoidCallback? onTap;
-
-  const _ActionButton(this.label, {this.filled = false, this.onTap});
+  final CardAction action;
+  const _ActionButton(this.action);
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: GestureDetector(
-        onTap: onTap,
+        onTap: action.onTap,
         child: Container(
           height: 30,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: filled ? AppColors.brown : Colors.transparent,
+            color: action.filled ? AppColors.brown : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: AppColors.brown),
           ),
           child: Text(
-            label,
+            action.label,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: filled ? AppColors.cream : AppColors.brown,
+              color: action.filled ? AppColors.cream : AppColors.brown,
             ),
           ),
         ),
