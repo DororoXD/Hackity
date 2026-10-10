@@ -38,6 +38,15 @@ class Sale(SQLModel, table=True):
     quantity: float
 
 
+class SalesImport(SQLModel, table=True):
+    """One POS file that was imported (not dry runs)."""
+    id: Optional[int] = Field(default=None, primary_key=True)
+    filename: str
+    imported_on: date
+    rows_imported: int
+    rows_rejected: int
+
+
 def get_session():
     with Session(engine) as session:
         yield session

@@ -6,8 +6,9 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from sqlmodel import Session, select
 
-from database import Batch, Product, Sale, get_session
-from schemas import ImportRow, RowStatus, SalesImportResult
+import clock
+from database import Batch, Product, Sale, SalesImport, get_session
+from schemas import ImportRecord, ImportRow, RowStatus, SalesImportResult
 
 router = APIRouter(prefix="/sales", tags=["sales"])
 
@@ -84,7 +85,15 @@ async def import_sales(file: UploadFile, date_column: str = "date", product_colu
         for r in ok:
             session.add(Sale(product_id=r.product_id, sale_date=r.sale_date, quantity=r.quantity))
             consume_fifo(session, r.product_id, r.quantity, r.sale_date)
+        session.add(SalesImport(filename=file.filename or "upload.csv", imported_on=clock.today(),
+                                rows_imported=len(ok), rows_rejected=len(rows) - len(ok)))
         session.commit()
     unmatched = sum(r.status == RowStatus.unmatched for r in rows)
     return SalesImportResult(rows=rows, ok=len(ok), unmatched=unmatched, errors=len(rows) - len(ok) - unmatched,
                              imported=0 if dry_run else len(ok))
+
+
+@router.get("/imports", response_model=list[ImportRecord])
+def list_imports(limit: int = 10, session: Session = Depends(get_session)):
+    """The most recent imports first, for the import history list."""
+    return session.exec(select(SalesImport).order_by(SalesImport.id.desc()).limit(limit)).all()
