@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../core/helpers.dart';
+import '../core/session.dart';
 import '../core/theme.dart';
 import '../models/alert_item.dart';
 import '../services/api_service.dart';
@@ -17,6 +19,28 @@ class TodayAlertsScreen extends StatefulWidget {
 
 class _TodayAlertsScreenState extends State<TodayAlertsScreen> {
   late Future<AlertsResponse> _future = ApiService.fetchAlerts();
+
+  // The greeting follows the device clock; check it every minute so it
+  // changes at 12pm and 6pm while the screen is open.
+  DateTime _now = DateTime.now();
+  late final Timer _clock = Timer.periodic(
+    const Duration(minutes: 1),
+    (_) => setState(() {
+      _now = DateTime.now();
+    }),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _clock; // start the timer
+  }
+
+  @override
+  void dispose() {
+    _clock.cancel();
+    super.dispose();
+  }
 
   // setState must not get a closure that returns a Future, so use a block body.
   void _reload() {
@@ -46,19 +70,22 @@ class _TodayAlertsScreenState extends State<TodayAlertsScreen> {
           width: double.infinity,
           color: AppColors.brown,
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 14),
-          child: const Row(
+          child: Row(
             children: [
               Expanded(
-                child: Text(
-                  'Good Morning, User!',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.peach,
+                child: ValueListenableBuilder<String>(
+                  valueListenable: Session.username,
+                  builder: (context, name, _) => Text(
+                    '${greetingFor(_now)}, ${name.isEmpty ? 'User' : name}!',
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.peach,
+                    ),
                   ),
                 ),
               ),
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 22,
                 backgroundColor: Colors.white,
                 child: Icon(Icons.person_outline, color: AppColors.brown),
