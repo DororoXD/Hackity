@@ -1,0 +1,362 @@
+[
+  {
+    "product_id": 108,
+    "name": "White Bread",
+    "category": "Bakery",
+    "unit": "loaves",
+    "quantity": 14.2,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 834,
+    "name": "Fresh Milk",
+    "category": "Dairy",
+    "unit": "packs",
+    "quantity": 238.2,
+    "active_batches": 2,
+    "next_expiry": "2024-06-21"
+  },
+  {
+    "product_id": 411,
+    "name": "Greek Yogurt",
+    "category": "Dairy",
+    "unit": "packs",
+    "quantity": 51.9,
+    "active_batches": 1,
+    "next_expiry": "2024-06-30"
+  },
+  {
+    "product_id": 783,
+    "name": "Eggs",
+    "category": "Eggs",
+    "unit": "trays",
+    "quantity": 157.2,
+    "active_batches": 1,
+    "next_expiry": "2024-07-11"
+  },
+  {
+    "product_id": 115,
+    "name": "Coriander",
+    "category": "Fresh herbs",
+    "unit": "bunches",
+    "quantity": 14.4,
+    "active_batches": 1,
+    "next_expiry": "2024-06-24"
+  },
+  {
+    "product_id": 250,
+    "name": "Bananas",
+    "category": "Fruit",
+    "unit": "kg",
+    "quantity": 31.7,
+    "active_batches": 1,
+    "next_expiry": "2024-06-27"
+  },
+  {
+    "product_id": 634,
+    "name": "Dragon Fruit",
+    "category": "Fruit",
+    "unit": "kg",
+    "quantity": 27.0,
+    "active_batches": 1,
+    "next_expiry": "2024-06-27"
+  },
+  {
+    "product_id": 345,
+    "name": "Guava",
+    "category": "Fruit",
+    "unit": "kg",
+    "quantity": 27.7,
+    "active_batches": 1,
+    "next_expiry": "2024-06-27"
+  },
+  {
+    "product_id": 422,
+    "name": "Honeydew",
+    "category": "Fruit",
+    "unit": "kg",
+    "quantity": 48.7,
+    "active_batches": 2,
+    "next_expiry": "2024-06-22"
+  },
+  {
+    "product_id": 291,
+    "name": "Mangoes",
+    "category": "Fruit",
+    "unit": "kg",
+    "quantity": 23.700000000000003,
+    "active_batches": 2,
+    "next_expiry": "2024-06-21"
+  },
+  {
+    "product_id": 635,
+    "name": "Papaya",
+    "category": "Fruit",
+    "unit": "kg",
+    "quantity": 24.2,
+    "active_batches": 1,
+    "next_expiry": "2024-06-27"
+  },
+  {
+    "product_id": 638,
+    "name": "Pineapple",
+    "category": "Fruit",
+    "unit": "kg",
+    "quantity": 26.4,
+    "active_batches": 2,
+    "next_expiry": "2024-06-19"
+  },
+  {
+    "product_id": 26,
+    "name": "Brinjal",
+    "category": "Fruiting vegetables",
+    "unit": "kg",
+    "quantity": 72.9,
+    "active_batches": 2,
+    "next_expiry": "2024-06-22"
+  },
+  {
+    "product_id": 774,
+    "name": "Cherry Tomatoes",
+    "category": "Fruiting vegetables",
+    "unit": "kg",
+    "quantity": 39.4,
+    "active_batches": 2,
+    "next_expiry": "2024-06-20"
+  },
+  {
+    "product_id": 578,
+    "name": "Cucumber",
+    "category": "Fruiting vegetables",
+    "unit": "kg",
+    "quantity": 76.30000000000001,
+    "active_batches": 2,
+    "next_expiry": "2024-06-20"
+  },
+  {
+    "product_id": 23,
+    "name": "Japanese Cucumber",
+    "category": "Fruiting vegetables",
+    "unit": "kg",
+    "quantity": 51.1,
+    "active_batches": 1,
+    "next_expiry": "2024-06-26"
+  },
+  {
+    "product_id": 41,
+    "name": "Tomatoes",
+    "category": "Fruiting vegetables",
+    "unit": "kg",
+    "quantity": 63.599999999999994,
+    "active_batches": 2,
+    "next_expiry": "2024-06-20"
+  },
+  {
+    "product_id": 70,
+    "name": "Bok Choy",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 94.2,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 21,
+    "name": "Choy Sum",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 20.1,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 215,
+    "name": "Kai Lan",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 362.6,
+    "active_batches": 2,
+    "next_expiry": "2024-06-22"
+  },
+  {
+    "product_id": 500,
+    "name": "Kangkung",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 8.9,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 843,
+    "name": "Lettuce",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 15.8,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 118,
+    "name": "Napa Cabbage",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 24.0,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 117,
+    "name": "Romaine Lettuce",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 103.7,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 136,
+    "name": "Sawi",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 68.4,
+    "active_batches": 2,
+    "next_expiry": "2024-06-22"
+  },
+  {
+    "product_id": 140,
+    "name": "Spinach",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 18.5,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 554,
+    "name": "Watercress",
+    "category": "Leafy greens",
+    "unit": "kg",
+    "quantity": 32.8,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 486,
+    "name": "Beef Cubes",
+    "category": "Meat & poultry",
+    "unit": "kg",
+    "quantity": 91.19999999999999,
+    "active_batches": 2,
+    "next_expiry": "2024-06-20"
+  },
+  {
+    "product_id": 769,
+    "name": "Beef Slices",
+    "category": "Meat & poultry",
+    "unit": "kg",
+    "quantity": 22.8,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 300,
+    "name": "Chicken Breast",
+    "category": "Meat & poultry",
+    "unit": "kg",
+    "quantity": 229.20000000000002,
+    "active_batches": 2,
+    "next_expiry": "2024-06-20"
+  },
+  {
+    "product_id": 847,
+    "name": "Chicken Thigh",
+    "category": "Meat & poultry",
+    "unit": "kg",
+    "quantity": 61.900000000000006,
+    "active_batches": 2,
+    "next_expiry": "2024-06-22"
+  },
+  {
+    "product_id": 104,
+    "name": "Chicken Wings",
+    "category": "Meat & poultry",
+    "unit": "kg",
+    "quantity": 76.7,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 127,
+    "name": "Lamb Chops",
+    "category": "Meat & poultry",
+    "unit": "kg",
+    "quantity": 26.8,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 122,
+    "name": "Minced Beef",
+    "category": "Meat & poultry",
+    "unit": "kg",
+    "quantity": 61.3,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 6,
+    "name": "Whole Chicken",
+    "category": "Meat & poultry",
+    "unit": "kg",
+    "quantity": 36.9,
+    "active_batches": 1,
+    "next_expiry": "2024-06-23"
+  },
+  {
+    "product_id": 644,
+    "name": "Button Mushrooms",
+    "category": "Mushrooms",
+    "unit": "kg",
+    "quantity": 13.9,
+    "active_batches": 1,
+    "next_expiry": "2024-06-25"
+  },
+  {
+    "product_id": 93,
+    "name": "Ikan Kembung",
+    "category": "Seafood",
+    "unit": "kg",
+    "quantity": 9.9,
+    "active_batches": 1,
+    "next_expiry": "2024-06-22"
+  },
+  {
+    "product_id": 74,
+    "name": "Prawns",
+    "category": "Seafood",
+    "unit": "kg",
+    "quantity": 9.9,
+    "active_batches": 2,
+    "next_expiry": "2024-06-19"
+  },
+  {
+    "product_id": 4,
+    "name": "Firm Tofu",
+    "category": "Tofu & soy",
+    "unit": "packs",
+    "quantity": 25.4,
+    "active_batches": 1,
+    "next_expiry": "2024-06-24"
+  },
+  {
+    "product_id": 596,
+    "name": "Fresh Soy Milk",
+    "category": "Tofu & soy",
+    "unit": "packs",
+    "quantity": 32.0,
+    "active_batches": 1,
+    "next_expiry": "2024-06-24"
+  }
+]

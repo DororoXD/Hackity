@@ -9,7 +9,7 @@ Inputs (extra columns are ignored):
     forecasts   store_id, product_id, origin_date, target_date, q10, q50, q90   (ml/out/forecasts.csv)
     sku_params  product_id, price, and optionally name, unit, first_category_id (ml/out/sku_params.csv)
     elasticity  first_category_id, discount_pct, sales_multiplier              (ml/out/elasticity.csv)
-Missing first_category_id and name columns are filled from data/product_catalog.csv.
+Missing first_category_id, name and unit columns are filled from data/product_catalog.csv.
 """
 from pathlib import Path
 
@@ -65,7 +65,7 @@ def recommend(batches, forecasts, sku_params, elasticity, today, window_days=WIN
             qty = float(batch.quantity)
             if qty <= 0:
                 continue
-            what = f"{qty:g} {unit} {name}"
+            what = f"{_amount(qty)} {unit} {name}"
             if batch.days_left < 0:
                 rows.append(dict(
                     store_id=store_id, product_id=product_id, batch_id=batch.batch_id, issue_type="expired",
@@ -93,7 +93,7 @@ def recommend(batches, forecasts, sku_params, elasticity, today, window_days=WIN
             if best > 0 and saved > 0:
                 action = "discount"
                 extra = float(outcomes[best][0].mean() - sold0.mean())
-                advice = (f"A {best}% discount should sell about {extra:.1f} {unit} more "
+                advice = (f"A {best}% discount should sell about {_amount(extra)} {unit} more "
                           f"and recover about RM{saved:.2f}.")
             elif batch.days_left == 0:
                 action, best, saved = "donate", 0, 0.0
@@ -103,13 +103,13 @@ def recommend(batches, forecasts, sku_params, elasticity, today, window_days=WIN
                 advice = "No discount pays off yet; check again tomorrow."
             when = {0: "today", 1: "tomorrow"}.get(batch.days_left, f"in {batch.days_left} days")
             demand_note = ("There is no demand forecast for it" if quantiles is None else
-                           f"About {float(sold0.mean()):.1f} {unit} is expected to sell by then")
+                           f"About {_amount(sold0.mean())} {unit} is expected to sell by then")
             rows.append(dict(
                 store_id=store_id, product_id=product_id, batch_id=batch.batch_id,
                 issue_type="expiring_soon", action=action, discount_pct=best, risk=risk,
                 expected_waste_units=expected_waste, rm_at_risk=expected_waste * price,
                 expected_rm_saved=saved,
-                explanation=f"{what} expire {when}. {demand_note}, so about {expected_waste:.1f} {unit} "
+                explanation=f"{what} expire {when}. {demand_note}, so about {_amount(expected_waste)} {unit} "
                             f"may go unsold ({risk:.0%} risk). {advice}"))
 
     out = pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
@@ -118,8 +118,13 @@ def recommend(batches, forecasts, sku_params, elasticity, today, window_days=WIN
     return out.sort_values("rm_at_risk", ascending=False, ignore_index=True)
 
 
+def _amount(quantity):
+    """A quantity for a sentence: one decimal place, without a trailing .0 (12, 6.5)."""
+    return f"{float(quantity):.1f}".removesuffix(".0")
+
+
 def _with_catalog(sku_params):
-    missing = [c for c in ("first_category_id", "name") if c not in sku_params.columns]
+    missing = [c for c in ("first_category_id", "name", "unit") if c not in sku_params.columns]
     if not missing:
         return sku_params
     catalog = pd.read_csv(CATALOG_CSV, usecols=["product_id", *missing])

@@ -1,5 +1,6 @@
 """Policies the simulator compares. Each gets one day's view and returns rows of
-store_id, product_id, discount_pct (a store-SKU left out gets no discount).
+store_id, product_id, batch_id, discount_pct: a markdown on that batch only
+(a batch left out stays at full price).
 
     batches:    store_id, product_id, batch_id, quantity, received_date, expiry_date
                 (expiry_date is the last sellable day)
@@ -10,7 +11,7 @@ store_id, product_id, discount_pct (a store-SKU left out gets no discount).
 import pandas as pd
 
 KEYS = ["store_id", "product_id"]
-NO_ACTION = pd.DataFrame({"store_id": [], "product_id": [], "discount_pct": []})
+NO_ACTION = pd.DataFrame({"store_id": [], "product_id": [], "batch_id": [], "discount_pct": []})
 
 
 def days_left(batches, today):
@@ -23,18 +24,20 @@ def b1_do_nothing(batches, today, forecasts, sku_params, elasticity):
 
 
 def b2_last_day(batches, today, forecasts, sku_params, elasticity):
-    """30% off the SKU when any batch is on its last sellable day."""
+    """30% off every batch on its last sellable day."""
     hit = batches[days_left(batches, today) <= 1]
-    return hit[KEYS].drop_duplicates().assign(discount_pct=30)
+    return hit[KEYS + ["batch_id"]].assign(discount_pct=30)
 
 
 def b3_ma_rule(batches, today, forecasts, sku_params, elasticity):
-    """20% off when stock exceeds the 7-day average demand x days left on the oldest batch."""
+    """20% off the oldest batch when the SKU's stock exceeds the 7-day average demand x the
+    days left on that batch."""
     if batches.empty:
         return NO_ACTION
-    per_sku = (batches.assign(left=days_left(batches, today))
-               .groupby(KEYS).agg(stock=("quantity", "sum"), left=("left", "min")).reset_index())
+    b = batches.assign(left=days_left(batches, today)).sort_values(KEYS + ["expiry_date", "batch_id"])
+    oldest = b.groupby(KEYS).head(1)[KEYS + ["batch_id", "left"]]
+    stock = b.groupby(KEYS)["quantity"].sum().rename("stock").reset_index()
     ma = forecasts.loc[forecasts["horizon"] == 1, KEYS + ["q50"]]
-    per_sku = per_sku.merge(ma, on=KEYS, how="left")
+    per_sku = oldest.merge(stock, on=KEYS).merge(ma, on=KEYS, how="left")
     hit = per_sku[per_sku["stock"] > per_sku["q50"].fillna(0) * per_sku["left"]]
-    return hit[KEYS].assign(discount_pct=20)
+    return hit[KEYS + ["batch_id"]].assign(discount_pct=20)

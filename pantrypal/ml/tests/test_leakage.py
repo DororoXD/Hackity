@@ -26,3 +26,25 @@ def test_ma7_uses_nothing_after_origin():
         return fc[fc["day"] == origin].sort_values(["store_id", "product_id", "horizon"])["q50"].to_numpy()
 
     np.testing.assert_allclose(q50_at_origin(df), q50_at_origin(changed))
+
+
+def test_lgbm_features_use_nothing_after_origin():
+    from train import make_features
+
+    df = make_history()
+    df["demand"] = df["sale_amount"]
+    for c in ["second_category_id", "third_category_id"]:
+        df[c] = df["first_category_id"]
+    df["holiday_flag"] = 0
+    df["discount"] = 1.0
+    origin = 20
+    changed = df.copy()
+    changed.loc[changed["day"] > origin, "demand"] *= 100
+
+    cols = [f"lag{k}" for k in range(7)] + ["roll7", "roll14", "past_mean"]
+
+    def at_origin(history):
+        f = make_features(history)
+        return f[f["day"] == origin].sort_values(["store_id", "product_id", "horizon"])[cols].to_numpy()
+
+    np.testing.assert_allclose(at_origin(df), at_origin(changed))
