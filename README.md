@@ -1,0 +1,1 @@
+PantryPal: a Flutter mobile app that helps small food businesses cut waste. It shows which stock is about to expire, recommends an action (discount, donate, remove or monitor), and shows how many RM are at risk. It connects to a FastAPI backend with a spoilage-prediction engine and supports CSV sales import with a preview.
